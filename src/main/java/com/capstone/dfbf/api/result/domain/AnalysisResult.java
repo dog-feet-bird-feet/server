@@ -1,4 +1,4 @@
-package com.capstone.dfbf.api.result;
+package com.capstone.dfbf.api.result.domain;
 
 import com.capstone.dfbf.api.member.Member;
 import com.capstone.dfbf.global.base.BaseEntity;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Result extends BaseEntity {
+public class AnalysisResult extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
