@@ -19,7 +19,7 @@ public class DataLoader implements CommandLineRunner {
     private ResultRepository resultRepository;
 
     @Override
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         Member member = Member.builder()
                 .email("sungwon326@naver.com")
                 .nickname("성원")

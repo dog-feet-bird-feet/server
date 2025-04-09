@@ -21,7 +21,7 @@ public class AppraisalController {
     private AppraisalService appraisalService;
 
     @PostMapping
-    public ResponseEntity<AppraisalResponse> appraisal(@RequestBody AppraisalRequest request) throws JsonProcessingException {
+    public ResponseEntity<AppraisalResponse> appraisal(@RequestBody AppraisalRequest request) {
         AppraisalResponse response = appraisalService.appraise(request);
         return ResponseEntity.ok(response);
     }
