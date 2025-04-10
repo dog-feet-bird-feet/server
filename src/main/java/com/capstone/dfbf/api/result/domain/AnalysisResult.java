@@ -26,6 +26,9 @@ public class AnalysisResult extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private AnalysisResult analysisResult;
+
     public AnalysisResult updateWith(final AppraisalResponse response) {
         return AnalysisResult.builder()
                 .id(this.id)
