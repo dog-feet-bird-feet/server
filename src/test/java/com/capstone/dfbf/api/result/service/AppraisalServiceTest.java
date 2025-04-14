@@ -1,31 +1,64 @@
 package com.capstone.dfbf.api.result.service;
 
-import com.capstone.dfbf.api.result.controller.AppraisalController;
+import com.capstone.dfbf.api.result.dao.ResultRepository;
+import com.capstone.dfbf.api.result.domain.AnalysisResult;
+import com.capstone.dfbf.api.result.dto.AppraisalRequest;
+import com.capstone.dfbf.api.result.dto.AppraisalResponse;
+import com.capstone.dfbf.api.result.dto.AppraisalSuccess;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestTemplate;
+
+import java.util.Optional;
+
+import static com.capstone.dfbf.api.fixture.ResultFixture.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest
 @ExtendWith(MockitoExtension.class)
 class AppraisalServiceTest {
 
-    @Autowired
-    private AppraisalController controller;
+    @InjectMocks
+    private AppraisalService appraisalService;
+    @Mock
+    private RestTemplate restTemplate;
+    @Mock
+    private ResultRepository resultRepository;
 
-    // TODO 단위 테스트가 어렵다고 판단하여 보류
     @Test
     void AI_서버에_분석을_의뢰한다() {
         // given
-        final Long id = 1L;
+        AppraisalRequest request = createAppraisalRequest();
+        AppraisalResponse expectedResponse = createAppraisalResponse();
+        AnalysisResult mockResult = createAnalysisResult();
+
+        ResponseEntity<AppraisalResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
+        when(restTemplate.exchange(
+                anyString(),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(AppraisalResponse.class))
+        ).thenReturn(responseEntity);
+        when(resultRepository.findById(anyString())).thenReturn(Optional.ofNullable(mockResult));
+        when(resultRepository.save(any(AnalysisResult.class))).thenReturn(mockResult);
 
         // when
+        AppraisalSuccess success = appraisalService.appraise(request);
 
         // then
+        assertThat(success.isSuccess()).isEqualTo(true);
+        assertThat(success.message()).isEqualTo("감정이 완료되었습니다.");
     }
 }

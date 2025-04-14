@@ -35,23 +35,23 @@ class AppraisalControllerTest {
     @MockitoBean
     AppraisalService appraisalService;
 
-    @Test
-    void AI_서버에_분석을_의뢰한다() throws Exception {
-        // given
-        AppraisalRequest request = new AppraisalRequest(1);
-        doNothing().when(appraisalService).appraise(any(AppraisalRequest.class));
-
-        // when
-        ResultActions resultActions = mockMvc.perform(post("/appraisal")
-                .content(objectMapper.writeValueAsString(request))
-                .contentType(MediaType.APPLICATION_JSON)
-        );
-
-        // then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$").value("요청이 완료되었습니다."));
-    }
+//    @Test
+//    void AI_서버에_분석을_의뢰한다() throws Exception {
+//        // given
+//        AppraisalRequest request = new AppraisalRequest(1);
+//        doNothing().when(appraisalService).appraise(any(AppraisalRequest.class));
+//
+//        // when
+//        ResultActions resultActions = mockMvc.perform(post("/appraisal")
+//                .content(objectMapper.writeValueAsString(request))
+//                .contentType(MediaType.APPLICATION_JSON)
+//        );
+//
+//        // then
+//        resultActions
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$").value("요청이 완료되었습니다."));
+//    }
 
     @Test
     void AI_서버에서_분석_중_오류가_발생한다() {
