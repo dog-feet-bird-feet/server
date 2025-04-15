@@ -10,16 +10,16 @@ import java.time.LocalDate;
 
 public class ResultFixture {
 
-    private final static Ulid ulid = UlidCreator.getUlid(20);
     private final static LocalDate createdAt = LocalDate.of(2024, 4, 11);
+    private final static String id = "01JRSYFFCD6R6C88JJFA0JTZPB";
 
     public static AppraisalRequest createAppraisalRequest() {
-        return new AppraisalRequest(ulid.toString());
+        return new AppraisalRequest(id);
     }
 
     public static AppraisalResponse createAppraisalResponse() {
         return AppraisalResponse.builder()
-                .id(ulid.toString())
+                .id(id)
                 .inclination(1.223)
                 .similarity(1.3)
                 .pressure(32.1)
@@ -30,6 +30,7 @@ public class ResultFixture {
 
     public static AnalysisResult createAnalysisResult() {
         return AnalysisResult.builder()
+                .id(id)
                 .inclination(1.223)
                 .similarity(1.3)
                 .pressure(32.1)
