@@ -1,5 +1,6 @@
 package com.capstone.dfbf.api.result.domain;
 
+import com.capstone.dfbf.api.evidence.domain.EvidenceGroup;
 import com.capstone.dfbf.api.member.Member;
 import com.capstone.dfbf.api.result.dto.AppraisalResponse;
 import com.capstone.dfbf.global.base.BaseEntity;
@@ -27,7 +28,7 @@ public class AnalysisResult extends BaseEntity {
     private Member member;
 
     @OneToOne(fetch = FetchType.LAZY)
-    private AnalysisResult analysisResult;
+    private EvidenceGroup evidenceGroup;
 
     public AnalysisResult updateWith(final AppraisalResponse response) {
         return AnalysisResult.builder()
