@@ -22,7 +22,7 @@ public record AppraisalResponse(
                 .pressure(analysisResult.getPressure())
                 .similarity(analysisResult.getSimilarity())
                 .verificationImgUrl(analysisResult.getVerificationImgUrl())
-                .createdAt(analysisResult.getCreatedAt().toLocalDate())
+                .createdAt(analysisResult.getCreatedAt() != null ? analysisResult.getCreatedAt().toLocalDate() : null)
                 .build();
     }
 }
