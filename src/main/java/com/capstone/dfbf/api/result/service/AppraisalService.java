@@ -5,6 +5,7 @@ import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.dto.AppraisalRequest;
 import com.capstone.dfbf.api.result.dto.AppraisalResponse;
 import com.capstone.dfbf.api.result.dto.AppraisalSuccess;
+import com.capstone.dfbf.global.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
+
+import static com.capstone.dfbf.global.exception.error.ErrorCode.RESULT_NOT_FOUND;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,7 +47,7 @@ public class AppraisalService {
 
     @Transactional(readOnly = true)
     public AppraisalResponse getAppraisal(final String id) {
-        AnalysisResult result = resultRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        AnalysisResult result = resultRepository.findById(id).orElseThrow(() -> BaseException.from(RESULT_NOT_FOUND));
         return AppraisalResponse.from(result);
     }
 
