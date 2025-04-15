@@ -27,7 +27,7 @@ class ResultRepositoryTest {
     @Test
     void ULID_PK_자동_생성을_확인한다() {
         // given
-        AnalysisResult result = ResultFixture.createAnalysisResult();
+        AnalysisResult result = ResultFixture.createAnalysisResultWOId();
 
         // when
         AnalysisResult savedResult = resultRepository.save(result);
