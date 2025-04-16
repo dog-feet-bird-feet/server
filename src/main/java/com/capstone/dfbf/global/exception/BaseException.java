@@ -10,10 +10,12 @@ public class BaseException extends RuntimeException {
     private String customErrorMessage;
 
     private BaseException(BaseCode code) {
+        super(code.getMessage());
         this.code = code;
     }
 
     private BaseException(BaseCode code, final String message) {
+        super(message);
         this.code = code;
         this.customErrorMessage = message;
     }
