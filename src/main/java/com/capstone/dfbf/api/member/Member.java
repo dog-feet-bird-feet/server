@@ -1,10 +1,9 @@
 package com.capstone.dfbf.api.member;
 
 import com.capstone.dfbf.global.base.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.capstone.dfbf.global.oauth2.domain.OAuthProviderType;
+import com.capstone.dfbf.global.oauth2.userInfo.OAuth2UserInfo;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -18,5 +17,29 @@ public class Member extends BaseEntity {
 
     private String email;
     private String nickname;
+    private String oauthId;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Enumerated(value = EnumType.STRING)
+    private OAuthProviderType providerType;
+
+    public enum Role {
+        USER("USER"),;
+
+        Role(String type) {}
+
+        private String type;
+    }
+
+    public static Member createMemberGuest(OAuth2UserInfo userInfo){
+        return Member.builder()
+                .nickname(userInfo.getName())
+                .email(userInfo.getEmail())
+                .providerType(userInfo.getProviderType())
+                .oauthId(userInfo.getOAuthId())
+                .role(Role.USER)
+                .build();
+    }
 }
