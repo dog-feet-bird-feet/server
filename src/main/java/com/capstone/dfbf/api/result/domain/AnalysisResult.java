@@ -1,11 +1,12 @@
 package com.capstone.dfbf.api.result.domain;
 
+import com.capstone.dfbf.api.evidence.domain.EvidenceGroup;
 import com.capstone.dfbf.api.member.Member;
 import com.capstone.dfbf.api.result.dto.AppraisalResponse;
 import com.capstone.dfbf.global.base.BaseEntity;
-import com.github.f4b6a3.ulid.UlidCreator;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Getter
@@ -14,10 +15,10 @@ import lombok.*;
 @AllArgsConstructor
 public class AnalysisResult extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private String ulid = UlidCreator.getUlid().toString();
+    @Id
+    @GeneratedValue(generator = "ulid-generator")
+    @GenericGenerator(name = "ulid-generator", strategy = "com.capstone.dfbf.api.result.domain.UlidGenerator")
+    private String id;
     private Double similarity;
     private Double pressure;
     private Double inclination;
@@ -26,10 +27,12 @@ public class AnalysisResult extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member member;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    private EvidenceGroup evidenceGroup;
+
     public AnalysisResult updateWith(final AppraisalResponse response) {
         return AnalysisResult.builder()
                 .id(this.id)
-                .ulid(this.ulid)
                 .member(this.member)
                 .similarity(response.similarity())
                 .inclination(response.inclination())
