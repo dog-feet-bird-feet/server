@@ -10,6 +10,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 @Entity
 @Getter
+@Setter(AccessLevel.PRIVATE)
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
@@ -19,6 +20,7 @@ public class AnalysisResult extends BaseEntity {
     @GeneratedValue(generator = "ulid-generator")
     @GenericGenerator(name = "ulid-generator", strategy = "com.capstone.dfbf.api.result.domain.UlidGenerator")
     private String id;
+    private String name;
     private Double similarity;
     private Double pressure;
     private Double inclination;
@@ -39,5 +41,9 @@ public class AnalysisResult extends BaseEntity {
                 .pressure(response.pressure())
                 .verificationImgUrl(response.verificationImgUrl())
                 .build();
+    }
+
+    public void update(final Member member) {
+        setMember(member);
     }
 }
