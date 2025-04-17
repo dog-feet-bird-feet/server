@@ -16,7 +16,6 @@ import static org.mockito.Mockito.when;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-@ExtendWith(SpringExtension.class)
 class HistoryTest {
 
     private History history;
