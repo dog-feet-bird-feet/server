@@ -2,6 +2,7 @@ package com.capstone.dfbf.api.result.controller;
 
 import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
 import com.capstone.dfbf.api.result.service.HistoryService;
+import com.capstone.dfbf.api.result.service.ResultResponse;
 import com.capstone.dfbf.global.security.domain.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,13 @@ public class HistoryController {
         return ResponseEntity.ok(responses);
     }
 
-    @DeleteMapping
+    @GetMapping("/result")
+    public ResponseEntity<?> getResult(@RequestParam("id") String id) {
+        ResultResponse response = historyService.getResultById(id);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/result")
     public ResponseEntity<?> deleteHistory(@RequestParam("id") String id) {
         historyService.deleteResult(id);
         return ResponseEntity.ok("삭제에 성공했습니다.");

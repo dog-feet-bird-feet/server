@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
@@ -104,6 +105,28 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
     @Test
     @WithCustomMockUser
+    void 감정_결과를_정상적으로_조회한다() throws Exception {
+        // given
+        AnalysisResult result = ResultFixture.createAnalysisResult();
+        when(resultRepository.findById(eq(result.getId()))).thenReturn(Optional.of(result));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/history/result")
+                        .param("id", result.getId())
+                        .with(user(principalDetails))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(result.getId()))
+                .andExpect(jsonPath("$.name").value(result.getName()));
+    }
+
+    @Test
+    @WithCustomMockUser
     void 감정_결과를_정상적으로_삭제한다() throws Exception {
         // given
         AnalysisResult result1 = ResultFixture.createAnalysisResult();
@@ -112,7 +135,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                delete("/api/v1/history")
+                delete("/api/v1/history/result")
                         .param("id", result1.getId())
                         .with(user(principalDetails))
         );
@@ -132,7 +155,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                delete("/api/v1/history")
+                delete("/api/v1/history/result")
                         .param("id", result1.getId())
                         .with(user(principalDetails))
         );
