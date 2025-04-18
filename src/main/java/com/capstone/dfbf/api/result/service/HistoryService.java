@@ -2,6 +2,7 @@ package com.capstone.dfbf.api.result.service;
 
 import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
+import com.capstone.dfbf.api.result.domain.History;
 import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ public class HistoryService {
 
     public List<HistoryResultResponse> getHistoryByMemberId(final Long memberId) {
         List<AnalysisResult> results = resultRepository.findByMember(memberId);
-        return results.stream().map(HistoryResultResponse::from).toList();
+        History history = new History(results);
+        return HistoryResultResponse.from(history);
     }
 }
