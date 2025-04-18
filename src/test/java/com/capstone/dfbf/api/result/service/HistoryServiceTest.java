@@ -5,6 +5,7 @@ import com.capstone.dfbf.api.member.Member;
 import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
+import com.capstone.dfbf.global.exception.BaseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -17,7 +18,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -57,10 +60,27 @@ class HistoryServiceTest {
     @Test
     void 히스토리에서_결과삭제를_성공한다() {
         // given
+        when(resultRepository.existsById(eq(result.getId()))).thenReturn(true);
+        doNothing().when(resultRepository).deleteById(eq(result.getId()));
+
+        // when
+        historyService.deleteResult(result.getId());
+
+        // then
+        verify(resultRepository).deleteById(eq(result.getId()));
+    }
+
+    @Test
+    void 삭제하려는_결과가_존재하지_않는경우_예외를_반환한다() {
+        // given
+        when(resultRepository.existsById(eq(result.getId()))).thenReturn(false);
 
         // when
 
         // then
+        assertThatThrownBy(() -> historyService.deleteResult(result.getId()))
+                .hasMessage("결과를 찾을 수 없습니다.")
+                .isInstanceOf(BaseException.class);
     }
 
     @Test

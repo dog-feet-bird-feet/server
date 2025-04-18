@@ -6,9 +6,7 @@ import com.capstone.dfbf.global.security.domain.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -24,5 +22,11 @@ public class HistoryController {
         final Long memberId = principalDetails.getAuthenticatedMember().getMemberId();
         List<HistoryResultResponse> responses = historyService.getHistoryByMemberId(memberId);
         return ResponseEntity.ok(responses);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteHistory(@RequestParam("id") String id) {
+        historyService.deleteResult(id);
+        return ResponseEntity.ok("삭제에 성공했습니다.");
     }
 }
