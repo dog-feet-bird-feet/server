@@ -4,9 +4,7 @@ import com.capstone.dfbf.api.annotation.WithCustomMockUser;
 import com.capstone.dfbf.api.fixture.ResultFixture;
 import com.capstone.dfbf.api.injector.MockitoBeanInjector;
 import com.capstone.dfbf.api.member.Member;
-import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
-import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
 import com.capstone.dfbf.api.result.service.HistoryService;
 import com.capstone.dfbf.global.security.domain.AuthenticatedMember;
 import com.capstone.dfbf.global.security.domain.PrincipalDetails;
@@ -17,23 +15,19 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
-import java.security.Principal;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -79,7 +73,6 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
         // then
         resultActions
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(result1.getId()))
@@ -105,8 +98,49 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
         // then
         resultActions
-                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    @WithCustomMockUser
+    void 감정_결과를_정상적으로_삭제한다() throws Exception {
+        // given
+        AnalysisResult result1 = ResultFixture.createAnalysisResult();
+        when(resultRepository.existsById(eq(result1.getId()))).thenReturn(true);
+        doNothing().when(resultRepository).deleteById(eq(result1.getId()));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/api/v1/history")
+                        .param("id", result1.getId())
+                        .with(user(principalDetails))
+        );
+
+        // then
+        resultActions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value("삭제에 성공했습니다."));
+    }
+
+    @Test
+    @WithCustomMockUser
+    void 존재하지_않는_감정_결과_삭제시_예외를_반환한다() throws Exception {
+        // given
+        AnalysisResult result1 = ResultFixture.createAnalysisResult();
+        when(resultRepository.existsById(eq(result1.getId()))).thenReturn(false);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                delete("/api/v1/history")
+                        .param("id", result1.getId())
+                        .with(user(principalDetails))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("결과를 찾을 수 없습니다."));
     }
 }
