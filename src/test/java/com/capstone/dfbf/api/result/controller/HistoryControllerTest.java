@@ -11,6 +11,8 @@ import com.capstone.dfbf.api.result.service.HistoryService;
 import com.capstone.dfbf.global.security.domain.AuthenticatedMember;
 import com.capstone.dfbf.global.security.domain.PrincipalDetails;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
@@ -36,6 +39,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
 class HistoryControllerTest extends MockitoBeanInjector {
@@ -60,7 +65,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
     @Test
     @WithCustomMockUser
-    void testGetHistory() throws Exception {
+    void 회원의_히스토리를_정상적으로_조회한다() throws Exception {
         // given
         AnalysisResult result1 = ResultFixture.createAnalysisResult();
         AnalysisResult result2 = ResultFixture.createAnalysisResult();
@@ -74,6 +79,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
         // then
         resultActions
+                .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(result1.getId()))
@@ -83,5 +89,24 @@ class HistoryControllerTest extends MockitoBeanInjector {
                 .andExpect(jsonPath("$[1].id").value(result2.getId()))
                 .andExpect(jsonPath("$[1].name").value(result2.getName()))
                 .andExpect(jsonPath("$[1].verificationImgUrl").value(result2.getVerificationImgUrl()));
+    }
+
+    @Test
+    @WithCustomMockUser
+    void 히스토리에_감정결과가_없을경우_빈_바디를_전송한다() throws Exception {
+        // given
+        when(resultRepository.findByMember(any(Long.class))).thenReturn(List.of());
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/history")
+                        .with(user(principalDetails))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
     }
 }
