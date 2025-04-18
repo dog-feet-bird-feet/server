@@ -7,13 +7,17 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
+@ExtendWith(MockitoExtension.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 class HistoryTest {
@@ -25,10 +29,7 @@ class HistoryTest {
 
     @BeforeEach
     void setUp() {
-        history = new History();
-        history.addResult(result1);
-        history.addResult(result2);
-        history.addResult(result3);
+        history = new History(new ArrayList<>(List.of(result1, result2, result3)));
     }
 
     @Test
