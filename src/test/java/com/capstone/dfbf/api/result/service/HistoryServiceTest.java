@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -81,6 +82,38 @@ class HistoryServiceTest {
         assertThatThrownBy(() -> historyService.deleteResult(result.getId()))
                 .hasMessage("결과를 찾을 수 없습니다.")
                 .isInstanceOf(BaseException.class);
+    }
+
+    @Test
+    void 결과ID를_통해_결과_조회를_성공한다() {
+        // given
+        final String resultId = result.getId();
+        when(resultRepository.findById(eq(resultId))).thenReturn(Optional.ofNullable(result));
+
+        // when
+        ResultResponse response = historyService.getResultById(resultId);
+
+        // then
+        assertThat(response.id()).isEqualTo(result.getId());
+        assertThat(response.similarity()).isEqualTo(result.getSimilarity());
+        assertThat(response.pressure()).isEqualTo(result.getPressure());
+        assertThat(response.inclination()).isEqualTo(result.getInclination());
+        assertThat(response.verificationImgUrl()).isEqualTo(result.getVerificationImgUrl());
+        assertThat(response.createdAt()).isEqualTo(result.getCreatedAt());
+    }
+
+    @Test
+    void 잘못된_결과ID로_결과_조회시_예외를_반환한다() {
+        // given
+        final String resultId = result.getId();
+        when(resultRepository.findById(eq(resultId))).thenReturn(Optional.empty());
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> historyService.getResultById(resultId))
+                .isInstanceOf(BaseException.class)
+                .hasMessage("결과를 찾을 수 없습니다.");
     }
 
     @Test
