@@ -145,9 +145,4 @@ class HistoryServiceTest {
                 .isInstanceOf(BaseException.class)
                 .hasMessage("결과를 찾을 수 없습니다.");
     }
-
-    @Test
-    void _20자_초과로_결과_제목_수정시_예외를_반환한다() {
-
-    }
 }
