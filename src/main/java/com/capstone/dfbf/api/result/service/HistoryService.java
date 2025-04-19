@@ -31,8 +31,16 @@ public class HistoryService {
 
     @Transactional(readOnly = true)
     public ResultResponse getResultById(final String resultId) {
-        AnalysisResult result = resultRepository.findById(resultId).orElseThrow(() -> BaseException.from(RESULT_NOT_FOUND));
+        AnalysisResult result = findById(resultId);
         return ResultResponse.from(result);
+    }
+
+    @Transactional
+    public String updateResultName(final String resultId, final String newName) {
+        AnalysisResult result = findById(resultId);
+        result = result.updateWith(newName);
+        resultRepository.save(result);
+        return result.getId();
     }
 
     @Transactional
@@ -42,6 +50,10 @@ public class HistoryService {
         }
 
         resultRepository.deleteById(resultId);
+    }
+
+    private AnalysisResult findById(final String resultId) {
+        return resultRepository.findById(resultId).orElseThrow(() -> BaseException.from(RESULT_NOT_FOUND));
     }
 
     private boolean isResultExist(final String resultId) {
