@@ -28,7 +28,7 @@ import static org.hamcrest.Matchers.*;
 @TestPropertySource("classpath:application-test.yml")
 @ActiveProfiles("test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class ResultIntegrationTest {
+public class HistoryIntegrationTest {
 
     @LocalServerPort
     private int port;
@@ -98,6 +98,8 @@ public class ResultIntegrationTest {
                         .body("[1].verificationImgUrl", containsString("verification-img/"))
                 .extract();
     }
+
+
 
     private void generateToken() {
         member = Member.builder()
