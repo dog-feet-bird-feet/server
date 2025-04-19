@@ -43,6 +43,18 @@ public class AnalysisResult extends BaseEntity {
                 .build();
     }
 
+    public AnalysisResult updateWith(final String name) {
+        return AnalysisResult.builder()
+                .id(this.id)
+                .name(name)
+                .member(this.member)
+                .similarity(this.similarity)
+                .inclination(this.inclination)
+                .pressure(this.pressure)
+                .verificationImgUrl(this.verificationImgUrl)
+                .build();
+    }
+
     public void update(final Member member) {
         setMember(member);
     }

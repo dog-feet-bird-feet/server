@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -84,11 +85,69 @@ class HistoryServiceTest {
     }
 
     @Test
-    void 히스토리에서_결과의_이름을_변경을_성공한다() {
+    void 결과ID를_통해_결과_조회를_성공한다() {
         // given
+        final String resultId = result.getId();
+        when(resultRepository.findById(eq(resultId))).thenReturn(Optional.ofNullable(result));
+
+        // when
+        ResultResponse response = historyService.getResultById(resultId);
+
+        // then
+        assertThat(response.id()).isEqualTo(result.getId());
+        assertThat(response.similarity()).isEqualTo(result.getSimilarity());
+        assertThat(response.pressure()).isEqualTo(result.getPressure());
+        assertThat(response.inclination()).isEqualTo(result.getInclination());
+        assertThat(response.verificationImgUrl()).isEqualTo(result.getVerificationImgUrl());
+        assertThat(response.createdAt()).isEqualTo(result.getCreatedAt());
+    }
+
+    @Test
+    void 잘못된_결과ID로_결과_조회시_예외를_반환한다() {
+        // given
+        final String resultId = "Incorrect resultId";
+        when(resultRepository.findById(eq(resultId))).thenReturn(Optional.empty());
 
         // when
 
         // then
+        assertThatThrownBy(() -> historyService.getResultById(resultId))
+                .isInstanceOf(BaseException.class)
+                .hasMessage("결과를 찾을 수 없습니다.");
+    }
+
+    @Test
+    void 히스토리에서_결과의_제목_변경을_성공한다() {
+        // given
+        final String resultId = result.getId();
+        final String newName = "새롭게 변경된 결과";
+        when(resultRepository.findById(eq(resultId))).thenReturn(Optional.of(result));
+        when(resultRepository.save(any(AnalysisResult.class))).thenReturn(result);
+
+        // when
+        String returnedId = historyService.updateResultName(resultId, newName);
+
+        // then
+        assertThat(returnedId).isEqualTo(resultId);
+    }
+
+    @Test
+    void 잘못된_결과ID로_결과_제목_수정시_예외를_반환한다() {
+        // given
+        final String resultId = "Incorrect resultId";
+        final String newName = "새롭게 변경된 결과";
+        when(resultRepository.findById(eq(resultId))).thenReturn(Optional.empty());
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> historyService.updateResultName(resultId, newName))
+                .isInstanceOf(BaseException.class)
+                .hasMessage("결과를 찾을 수 없습니다.");
+    }
+
+    @Test
+    void _20자_초과로_결과_제목_수정시_예외를_반환한다() {
+
     }
 }

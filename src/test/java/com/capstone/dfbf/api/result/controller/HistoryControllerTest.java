@@ -5,9 +5,11 @@ import com.capstone.dfbf.api.fixture.ResultFixture;
 import com.capstone.dfbf.api.injector.MockitoBeanInjector;
 import com.capstone.dfbf.api.member.Member;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
+import com.capstone.dfbf.api.result.dto.ResultUpdateRequest;
 import com.capstone.dfbf.api.result.service.HistoryService;
 import com.capstone.dfbf.global.security.domain.AuthenticatedMember;
 import com.capstone.dfbf.global.security.domain.PrincipalDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -16,19 +18,20 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -43,7 +46,10 @@ class HistoryControllerTest extends MockitoBeanInjector {
     private MockMvc mockMvc;
 
     @Autowired
-    protected HistoryService historyService;
+    private HistoryService historyService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockitoBean
     private ClientRegistrationRepository clientRegistrationRepository;
@@ -104,6 +110,78 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
     @Test
     @WithCustomMockUser
+    void 감정_결과를_정상적으로_조회한다() throws Exception {
+        // given
+        AnalysisResult result = ResultFixture.createAnalysisResult();
+        when(resultRepository.findById(eq(result.getId()))).thenReturn(Optional.of(result));
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                get("/api/v1/history/result")
+                        .param("id", result.getId())
+                        .with(user(principalDetails))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(result.getId()))
+                .andExpect(jsonPath("$.name").value(result.getName()));
+    }
+
+    @Test
+    @WithCustomMockUser
+    void 감정_결과의_이름을_정상적으로_변경한다() throws Exception {
+        // given
+        AnalysisResult result = ResultFixture.createAnalysisResult();
+        ResultUpdateRequest request = new ResultUpdateRequest("새로지은 이름");
+        when(resultRepository.findById(eq(result.getId()))).thenReturn(Optional.of(result));
+        when(resultRepository.save(any(AnalysisResult.class))).thenReturn(result);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/history/result")
+                        .param("id", result.getId())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(user(principalDetails))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(result.getId() + "의 이름이 변경됐습니다."));
+    }
+
+    @Test
+    @WithCustomMockUser
+    void 요청한_이름이_20자를_초과할_경우_예외를_반환한다() throws Exception {
+        // given
+        AnalysisResult result = ResultFixture.createAnalysisResult();
+        ResultUpdateRequest request = new ResultUpdateRequest("이름이왜이렇게긴지모르겠지만테스트를위해아무이름이나짓는다");
+        when(resultRepository.findById(eq(result.getId()))).thenReturn(Optional.of(result));
+        when(resultRepository.save(any(AnalysisResult.class))).thenReturn(result);
+
+        // when
+        ResultActions resultActions = mockMvc.perform(
+                patch("/api/v1/history/result")
+                        .param("id", result.getId())
+                        .content(objectMapper.writeValueAsString(request))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(user(principalDetails))
+        );
+
+        // then
+        resultActions
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("이름은 1자 이상, 20자 이하여야 합니다."));
+    }
+
+    @Test
+    @WithCustomMockUser
     void 감정_결과를_정상적으로_삭제한다() throws Exception {
         // given
         AnalysisResult result1 = ResultFixture.createAnalysisResult();
@@ -112,7 +190,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                delete("/api/v1/history")
+                delete("/api/v1/history/result")
                         .param("id", result1.getId())
                         .with(user(principalDetails))
         );
@@ -132,7 +210,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
 
         // when
         ResultActions resultActions = mockMvc.perform(
-                delete("/api/v1/history")
+                delete("/api/v1/history/result")
                         .param("id", result1.getId())
                         .with(user(principalDetails))
         );

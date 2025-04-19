@@ -13,6 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.capstone.dfbf.global.exception.error.ErrorCode.RESULT_NOT_FOUND;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -27,13 +29,31 @@ public class HistoryService {
         return HistoryResultResponse.from(history);
     }
 
+    @Transactional(readOnly = true)
+    public ResultResponse getResultById(final String resultId) {
+        AnalysisResult result = findById(resultId);
+        return ResultResponse.from(result);
+    }
+
+    @Transactional
+    public String updateResultName(final String resultId, final String newName) {
+        AnalysisResult result = findById(resultId);
+        result = result.updateWith(newName);
+        resultRepository.save(result);
+        return result.getId();
+    }
+
     @Transactional
     public void deleteResult(final String resultId) {
         if(!isResultExist(resultId)) {
-            throw BaseException.from(ErrorCode.RESULT_NOT_FOUND);
+            throw BaseException.from(RESULT_NOT_FOUND);
         }
 
         resultRepository.deleteById(resultId);
+    }
+
+    private AnalysisResult findById(final String resultId) {
+        return resultRepository.findById(resultId).orElseThrow(() -> BaseException.from(RESULT_NOT_FOUND));
     }
 
     private boolean isResultExist(final String resultId) {
