@@ -1,9 +1,11 @@
 package com.capstone.dfbf.api.result.controller;
 
 import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
+import com.capstone.dfbf.api.result.dto.ResultUpdateRequest;
 import com.capstone.dfbf.api.result.service.HistoryService;
 import com.capstone.dfbf.api.result.service.ResultResponse;
 import com.capstone.dfbf.global.security.domain.PrincipalDetails;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -29,6 +31,12 @@ public class HistoryController {
     public ResponseEntity<?> getResult(@RequestParam("id") String id) {
         ResultResponse response = historyService.getResultById(id);
         return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/result")
+    public ResponseEntity<?> updateResult(@RequestParam("id") String id, @RequestBody @Valid ResultUpdateRequest request) {
+        String updatedId = historyService.updateResultName(id, request.newName());
+        return ResponseEntity.ok(updatedId + "의 이름이 변경됐습니다.");
     }
 
     @DeleteMapping("/result")
