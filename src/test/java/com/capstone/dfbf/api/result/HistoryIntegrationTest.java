@@ -97,10 +97,10 @@ public class HistoryIntegrationTest {
                         .statusCode(HttpStatus.OK.value())
                         .body("", hasSize(2))
                         .body("[0].id", notNullValue())
-                        .body("[0].createdAt", equalTo(result1.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))))
+                        .body("[0].createdAt", equalTo(result1.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"))))
                         .body("[0].verificationImgUrl", containsString("verification-img/"))
                         .body("[1].id", notNullValue())
-                        .body("[1].createdAt", equalTo(result2.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))))
+                        .body("[1].createdAt", equalTo(result2.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"))))
                         .body("[1].verificationImgUrl", containsString("verification-img/"))
                 .extract();
     }
@@ -123,7 +123,7 @@ public class HistoryIntegrationTest {
                         .body("similarity", equalTo(1.3F))
                         .body("pressure", equalTo(32.1F))
                         .body("inclination", equalTo(1.223F))
-                        .body("createdAt", equalTo(result1.getCreatedAt().toString()))
+                        .body("createdAt", equalTo(result1.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"))))
                         .body("verificationImgUrl", equalTo(result1.getVerificationImgUrl()))
                 .extract();
     }
@@ -226,7 +226,7 @@ public class HistoryIntegrationTest {
                 .providerType(OAuthProviderType.NAVER)
                 .build();
         if(memberRepository.findMemberByEmail("hong1234@gmail.com").isEmpty())
-            memberRepository.save(member);
+            member = memberRepository.save(member);
         final AuthenticatedMember authenticatedMember = AuthenticatedMember.from(member);
         accessToken = jwtProvider.generateAccessToken(authenticatedMember).token();
     }
