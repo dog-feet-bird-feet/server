@@ -22,6 +22,8 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 
+import java.time.format.DateTimeFormatter;
+
 import static org.hamcrest.Matchers.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -95,10 +97,10 @@ public class HistoryIntegrationTest {
                         .statusCode(HttpStatus.OK.value())
                         .body("", hasSize(2))
                         .body("[0].id", notNullValue())
-                        .body("[0].createdAt", equalTo("2025-04-19"))
+                        .body("[0].createdAt", equalTo(result1.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))))
                         .body("[0].verificationImgUrl", containsString("verification-img/"))
                         .body("[1].id", notNullValue())
-                        .body("[1].createdAt", equalTo("2025-04-19"))
+                        .body("[1].createdAt", equalTo(result2.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))))
                         .body("[1].verificationImgUrl", containsString("verification-img/"))
                 .extract();
     }
@@ -235,7 +237,7 @@ public class HistoryIntegrationTest {
         result2 = ResultFixture.createAnalysisResultWOId();
         result2.update(member);
 
-        resultRepository.save(result1);
-        resultRepository.save(result2);
+        result1 = resultRepository.save(result1);
+        result2 = resultRepository.save(result2);
     }
 }
