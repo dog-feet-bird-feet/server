@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +46,7 @@ class HistoryServiceTest {
     }
 
     @Test
-    void 회원_ID를_통해_히스토리_결과_조회를_성공한다() {
+    void 회원ID로_히스토리_결과_조회를_성공한다() {
         // given
         final long memberId = member.getId();
         when(resultRepository.findByMember(memberId)).thenReturn(List.of(result));
@@ -56,6 +57,20 @@ class HistoryServiceTest {
         // then
         assertThat(responses).hasSize(1);
         assertThat(responses.getFirst().id()).isEqualTo(result.getId());
+    }
+
+    @Test
+    void 잘못된_회원ID로_히스토리_결과_조회시_예외를_반환한다() {
+        // given
+        final long memberId = 404;
+        when(resultRepository.findByMember(memberId)).thenReturn(new ArrayList<>());
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> historyService.getHistoryByMemberId(memberId))
+                .isInstanceOf(BaseException.class)
+                .hasMessage("회원이 없습니다.");
     }
 
     @Test

@@ -25,6 +25,7 @@ public class HistoryService {
     @Transactional(readOnly = true)
     public List<HistoryResultResponse> getHistoryByMemberId(final Long memberId) {
         List<AnalysisResult> results = resultRepository.findByMember(memberId);
+        validateResults(results);
         History history = new History(results);
         return HistoryResultResponse.from(history);
     }
@@ -58,5 +59,11 @@ public class HistoryService {
 
     private boolean isResultExist(final String resultId) {
         return resultRepository.existsById(resultId);
+    }
+
+    private void validateResults(List<AnalysisResult> results) {
+        if (results.isEmpty()) {
+            throw BaseException.from(ErrorCode.MEMBER_NOT_FOUND);
+        }
     }
 }
