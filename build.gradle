@@ -56,6 +56,10 @@ dependencies {
 	// Integration Test
 	testImplementation("io.rest-assured:rest-assured:5.5.1")
 	runtimeOnly("com.github.scribejava:scribejava-apis:8.3.3")
+
+	// aws
+	implementation 'io.awspring.cloud:spring-cloud-aws-starter-s3:3.0.1'
+	implementation 'software.amazon.awssdk:s3:2.27.3'
 }
 
 tasks.named('test') {
