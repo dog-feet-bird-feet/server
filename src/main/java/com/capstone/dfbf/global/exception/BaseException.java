@@ -9,7 +9,7 @@ public class BaseException extends RuntimeException {
     private final BaseCode code;
     private String customErrorMessage;
 
-    private BaseException(BaseCode code) {
+    protected BaseException(BaseCode code) {
         super(code.getMessage());
         this.code = code;
     }

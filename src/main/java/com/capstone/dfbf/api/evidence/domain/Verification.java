@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Entity
 @Getter
@@ -20,11 +21,19 @@ public class Verification extends BaseEntity implements Evidence {
 
     private String imgUrl;
 
+    public Verification(String key) {
+        this.imgUrl = key;
+    }
+
     @Override
     public Evidence updateImgUrl(String imgUrl) {
         return Comparison.builder()
                 .id(this.id)
                 .imgUrl(imgUrl)
                 .build();
+    }
+
+    public static Verification from(String key) {
+        return new Verification(key);
     }
 }

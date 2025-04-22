@@ -44,7 +44,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/" ,"/oauth2/**", "/home", "/signup", "/index/**",
-                                "/index.js", "/favicon.ico", "/templates","/login/**").permitAll()
+                                "/index.js", "/favicon.ico", "/templates","/login/**", "/api/v1/s3/**").permitAll()
                         .anyRequest().authenticated())
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
