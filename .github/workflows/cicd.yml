@@ -36,7 +36,7 @@ jobs:
           ./gradlew clean build
 
       - name: 빌드된 파일 명 변경
-        run: mv ./dfbf/build/libs/*SNAPSHOT.jar ./project.jar
+        run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
 
       - name: SCP로 EC2에 빌드된 파일 전송
         uses: appleboy/scp-action@v0.1.7
@@ -45,7 +45,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: project.jar
-          target: ./dfbf/tobe
+          target: ./tobe
 
       - name: ssh 원격 접속
         uses: appleboy/ssh-action@v1.0.3
@@ -55,10 +55,10 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf ./dfbf/current
-            mkdir ./dfbf/current
-            mv ./dfbf/tobe/project.jar ./dfbf/current/project.jar
-            cd ./dfbf/current
+            rm -rf ./current
+            mkdir ./current
+            mv ./tobe/project.jar ./current/project.jar
+            cd ./current
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar project.jar > ./output.log 2>&1 &
-            rm -rf ./dfbf/tobe
+            rm -rf ./tobe
