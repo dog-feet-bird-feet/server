@@ -35,7 +35,7 @@ jobs:
           ./gradlew clean build -x test
 
       - name: 빌드된 파일 명 변경
-        run: mv ./server/build/libs/*SNAPSHOT.jar ./project.jar
+        run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
 
       - name: SCP로 EC2에 빌드된 파일 전송
         uses: appleboy/scp-action@v0.1.7
