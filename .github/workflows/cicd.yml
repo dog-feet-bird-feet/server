@@ -44,7 +44,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           source: project.jar
-          target: ./server/tobe
+          target: ./tobe
 
       - name: ssh 원격 접속
         uses: appleboy/ssh-action@v1.0.3
@@ -54,10 +54,10 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script_stop: true
           script: |
-            rm -rf ./server/current
-            mkdir /server./current
-            mv ./server/tobe/project.jar ./server/current/project.jar
-            cd ./server/current
+            rm -rf ./current
+            mkdir ./current
+            mv ./tobe/project.jar ./current/project.jar
+            cd ./current
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar project.jar > ./output.log 2>&1 &
-            rm -rf ./server/tobe
+            rm -rf ./tobe
