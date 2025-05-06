@@ -46,7 +46,7 @@ jobs:
           source: project.jar
           target: ./tobe
 
-      - name: ssh 원격 접속
+      - name: ssh 원격 접속 후 실행
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_HOST }}
@@ -59,5 +59,5 @@ jobs:
             mv ./tobe/project.jar ./current/project.jar
             cd ./current
             sudo fuser -k -n tcp 8080 || true
-            nohup java -jar project.jar > ./output.log 2>&1 &
+            nohup java -jar project.jar --spring.profiles.active=dev > ./output.log 2>&1 &
             rm -rf ./tobe
