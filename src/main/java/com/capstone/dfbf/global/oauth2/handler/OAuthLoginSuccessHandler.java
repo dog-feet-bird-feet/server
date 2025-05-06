@@ -5,15 +5,18 @@ import com.capstone.dfbf.global.security.domain.PrincipalDetails;
 import com.capstone.dfbf.global.token.provider.JwtProvider;
 import com.capstone.dfbf.global.token.vo.TokenResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,13 +40,17 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
     private void sendJsonTokenResponse(HttpServletRequest request,
                                        HttpServletResponse response,
                                        TokenResponse tokenResponse) throws IOException {
-        response.setStatus(HttpServletResponse.SC_OK);
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
         String accessToken = tokenResponse.accessToken().token();
+//        response.sendRedirect("/home?accessToken=" + accessToken);
+        ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
+                .httpOnly(true)
+                .secure(true)
+                .path("/")
+                .sameSite("Lax") // Lax, Strict, None 중 선택 가능
+                .maxAge(Duration.ofHours(-1))
+                .build();
 
-        Map<String, Object> body = new HashMap<>();
-        body.put("accessToken", accessToken);
-        response.getWriter().write(new ObjectMapper().writeValueAsString(body));
+        response.setHeader("Set-Cookie", cookie.toString());
+        response.sendRedirect("/");
     }
 }

@@ -6,6 +6,7 @@ import com.capstone.dfbf.global.oauth2.service.CustomOAuth2Service;
 import com.capstone.dfbf.global.security.filter.JwtFilter;
 import com.capstone.dfbf.global.security.service.MemberDetailsService;
 import com.capstone.dfbf.global.token.provider.JwtProvider;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +24,6 @@ import org.springframework.security.web.context.DelegatingSecurityContextReposit
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @RequiredArgsConstructor
@@ -37,15 +35,20 @@ public class SecurityConfig {
     private final OAuthFailureHandler oAuthFailureHandler;
     private final CustomOAuth2Service customOAuth2Service;
     private final AuthenticationConfiguration authenticationConfiguration;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomAuthenticationEntryPoint authenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
-                        .requestMatchers("/" ,"/oauth2/**", "/home", "/signup", "/index/**",
-                                "/index.js", "/favicon.ico", "/templates","/login/**", "/api/v1/s3/**").permitAll()
+                        .requestMatchers("/", "/oauth2/**", "/index/**", "/index.js", "/favicon.ico",
+                                "/templates", "/api/v1/s3/**", "/error").permitAll()
                         .anyRequest().authenticated())
+                .exceptionHandling((exceptionHandling) -> exceptionHandling
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler))
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -62,25 +65,12 @@ public class SecurityConfig {
                         .successHandler(oAuthSuccessHandler)
                         .failureHandler(oAuthFailureHandler))
                 .addFilterBefore(jwtAuthFilter(), OAuth2LoginAuthenticationFilter.class);
-
         return http.build();
     }
 
     @Bean
     public JwtFilter jwtAuthFilter() {
         return new JwtFilter(jwtProvider, memberDetailsService);
-    }
-
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.addAllowedOrigin("http://localhost:8080");
-        configuration.addAllowedMethod("*");
-        configuration.addAllowedHeader("*");
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
     }
 
     @Bean
