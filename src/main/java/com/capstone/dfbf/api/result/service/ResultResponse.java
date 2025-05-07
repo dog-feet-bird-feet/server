@@ -21,7 +21,7 @@ public record ResultResponse(
     public static ResultResponse from(AnalysisResult result) {
         return ResultResponse.builder()
                 .id(result.getId())
-                .name(result.getName())
+                .name(result.getTitle())
                 .similarity(result.getSimilarity())
                 .pressure(result.getPressure())
                 .inclination(result.getInclination())

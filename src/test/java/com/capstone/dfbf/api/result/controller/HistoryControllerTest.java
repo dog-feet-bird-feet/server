@@ -82,11 +82,11 @@ class HistoryControllerTest extends MockitoBeanInjector {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(result1.getId()))
-                .andExpect(jsonPath("$[0].name").value(result1.getName()))
+                .andExpect(jsonPath("$[0].name").value(result1.getTitle()))
                 .andExpect(jsonPath("$[0].verificationImgUrl").value(result1.getVerificationImgUrl()))
 
                 .andExpect(jsonPath("$[1].id").value(result2.getId()))
-                .andExpect(jsonPath("$[1].name").value(result2.getName()))
+                .andExpect(jsonPath("$[1].name").value(result2.getTitle()))
                 .andExpect(jsonPath("$[1].verificationImgUrl").value(result2.getVerificationImgUrl()));
     }
 
@@ -127,7 +127,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(result.getId()))
-                .andExpect(jsonPath("$.name").value(result.getName()));
+                .andExpect(jsonPath("$.name").value(result.getTitle()));
     }
 
     @Test

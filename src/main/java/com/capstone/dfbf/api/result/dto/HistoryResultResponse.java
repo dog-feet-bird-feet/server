@@ -4,11 +4,8 @@ import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.domain.History;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Builder
@@ -27,7 +24,7 @@ public record HistoryResultResponse(
     public static HistoryResultResponse from(AnalysisResult result) {
         return HistoryResultResponse.builder()
                 .id(result.getId())
-                .name(result.getName())
+                .name(result.getTitle())
                 .verificationImgUrl(result.getVerificationImgUrl())
                 .createdAt(result.getCreatedAt() != null ? result.getCreatedAt() : null)
                 .build();
