@@ -74,7 +74,7 @@ tasks.register('copyGitSubmodule', Copy) {
 	into 'src/main/resources'
 }
 
-processResources.dependsOn('copyTestGitSubmodule')
+processTestResources.dependsOn('copyTestGitSubmodule')
 tasks.register('copyTestGitSubmodule', Copy) {
 	from 'submodule/server'
 	include 'application-test.yml'
