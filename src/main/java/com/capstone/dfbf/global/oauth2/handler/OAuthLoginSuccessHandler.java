@@ -44,7 +44,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
 //        response.sendRedirect("/home?accessToken=" + accessToken);
         ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
                 .httpOnly(true)
-                .secure(true)
+                .secure(false)
                 .path("/")
                 .sameSite("Lax") // Lax, Strict, None 중 선택 가능
                 .maxAge(Duration.ofHours(1))
