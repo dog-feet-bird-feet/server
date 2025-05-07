@@ -70,6 +70,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
         AnalysisResult result1 = ResultFixture.createAnalysisResult();
         AnalysisResult result2 = ResultFixture.createAnalysisResult();
         when(resultRepository.findByMember(any(Long.class))).thenReturn(List.of(result1, result2));
+        when(memberRepository.existsById(anyLong())).thenReturn(true);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -95,6 +96,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
     void 히스토리에_감정결과가_없을경우_빈_바디를_전송한다() throws Exception {
         // given
         when(resultRepository.findByMember(any(Long.class))).thenReturn(List.of());
+        when(memberRepository.existsById(anyLong())).thenReturn(true);
 
         // when
         ResultActions resultActions = mockMvc.perform(

@@ -2,6 +2,7 @@ package com.capstone.dfbf.api.result.service;
 
 import com.capstone.dfbf.api.fixture.ResultFixture;
 import com.capstone.dfbf.api.member.Member;
+import com.capstone.dfbf.api.member.repository.MemberRepository;
 import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
@@ -34,6 +35,8 @@ class HistoryServiceTest {
 
     @Mock
     private ResultRepository resultRepository;
+    @Mock
+    private MemberRepository memberRepository;
 
     private AnalysisResult result;
     private Member member;
@@ -50,6 +53,7 @@ class HistoryServiceTest {
         // given
         final long memberId = member.getId();
         when(resultRepository.findByMember(memberId)).thenReturn(List.of(result));
+        when(memberRepository.existsById(anyLong())).thenReturn(true);
 
         // when
         List<HistoryResultResponse> responses = historyService.getHistoryByMemberId(memberId);
@@ -63,7 +67,7 @@ class HistoryServiceTest {
     void 잘못된_회원ID로_히스토리_결과_조회시_예외를_반환한다() {
         // given
         final long memberId = 404;
-        when(resultRepository.findByMember(memberId)).thenReturn(new ArrayList<>());
+        when(memberRepository.existsById(memberId)).thenReturn(false);
 
         // when
 
