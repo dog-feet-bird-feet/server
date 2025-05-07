@@ -47,7 +47,7 @@ public class OAuthLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHand
                 .secure(true)
                 .path("/")
                 .sameSite("Lax") // Lax, Strict, None 중 선택 가능
-                .maxAge(Duration.ofHours(-1))
+                .maxAge(Duration.ofHours(1))
                 .build();
 
         response.setHeader("Set-Cookie", cookie.toString());

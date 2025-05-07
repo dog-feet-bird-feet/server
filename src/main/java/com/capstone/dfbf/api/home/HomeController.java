@@ -11,7 +11,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String homeV1(@CookieValue(name = "accessToken", required = false) String accessToken) {
-        System.out.println("Access Token: " + accessToken);
+        log.info("Access Token: {}", accessToken);
         return "Welcome to GGZZ";
     }
 }
