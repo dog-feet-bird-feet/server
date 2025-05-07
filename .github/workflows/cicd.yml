@@ -60,4 +60,4 @@ jobs:
             cd ./current
             sudo fuser -k -n tcp 8080 || true
             nohup java -jar project.jar --spring.profiles.active=dev > ./output.log 2>&1 &
-            rm -rf ./tobe
+            sudo rm -rf ./tobe
