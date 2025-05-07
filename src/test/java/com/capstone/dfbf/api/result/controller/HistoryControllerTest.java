@@ -70,6 +70,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
         AnalysisResult result1 = ResultFixture.createAnalysisResult();
         AnalysisResult result2 = ResultFixture.createAnalysisResult();
         when(resultRepository.findByMember(any(Long.class))).thenReturn(List.of(result1, result2));
+        when(memberRepository.existsById(anyLong())).thenReturn(true);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -82,11 +83,11 @@ class HistoryControllerTest extends MockitoBeanInjector {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$[0].id").value(result1.getId()))
-                .andExpect(jsonPath("$[0].name").value(result1.getName()))
+                .andExpect(jsonPath("$[0].name").value(result1.getTitle()))
                 .andExpect(jsonPath("$[0].verificationImgUrl").value(result1.getVerificationImgUrl()))
 
                 .andExpect(jsonPath("$[1].id").value(result2.getId()))
-                .andExpect(jsonPath("$[1].name").value(result2.getName()))
+                .andExpect(jsonPath("$[1].name").value(result2.getTitle()))
                 .andExpect(jsonPath("$[1].verificationImgUrl").value(result2.getVerificationImgUrl()));
     }
 
@@ -95,6 +96,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
     void 히스토리에_감정결과가_없을경우_빈_바디를_전송한다() throws Exception {
         // given
         when(resultRepository.findByMember(any(Long.class))).thenReturn(List.of());
+        when(memberRepository.existsById(anyLong())).thenReturn(true);
 
         // when
         ResultActions resultActions = mockMvc.perform(
@@ -127,7 +129,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(result.getId()))
-                .andExpect(jsonPath("$.name").value(result.getName()));
+                .andExpect(jsonPath("$.name").value(result.getTitle()));
     }
 
     @Test

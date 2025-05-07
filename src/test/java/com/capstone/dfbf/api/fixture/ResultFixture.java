@@ -38,7 +38,7 @@ public class ResultFixture {
     public static AnalysisResult createAnalysisResult() {
         return AnalysisResult.builder()
                 .id(id)
-                .name("테스트 결과")
+                .title("테스트 결과")
                 .inclination(1.223)
                 .similarity(1.3)
                 .pressure(32.1)

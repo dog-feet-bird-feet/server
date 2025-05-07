@@ -70,5 +70,13 @@ processResources.dependsOn('copyGitSubmodule')
 tasks.register('copyGitSubmodule', Copy) {
 	from 'submodule/server'
 	include '*.yml'
+	exclude 'application-test.yml'
 	into 'src/main/resources'
+}
+
+processTestResources.dependsOn('copyTestGitSubmodule')
+tasks.register('copyTestGitSubmodule', Copy) {
+	from 'submodule/server'
+	include 'application-test.yml'
+	into 'src/test/resources'
 }

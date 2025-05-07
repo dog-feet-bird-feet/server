@@ -1,5 +1,6 @@
 package com.capstone.dfbf.api.result.controller;
 
+import com.capstone.dfbf.api.injector.MockitoBeanInjector;
 import com.capstone.dfbf.api.result.service.AppraisalService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -15,7 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 @SuppressWarnings("NonAsciiCharacters")
 @WebMvcTest({AppraisalController.class})
 @AutoConfigureMockMvc(addFilters = false)
-class AppraisalControllerTest {
+class AppraisalControllerTest extends MockitoBeanInjector {
 
     @Autowired
     private MockMvc mockMvc;

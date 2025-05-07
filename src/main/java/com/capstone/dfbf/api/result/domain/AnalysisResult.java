@@ -20,7 +20,7 @@ public class AnalysisResult extends BaseEntity {
     @GeneratedValue(generator = "ulid-generator")
     @GenericGenerator(name = "ulid-generator", strategy = "com.capstone.dfbf.api.result.domain.UlidGenerator")
     private String id;
-    private String name;
+    private String title;
     private Double similarity;
     private Double pressure;
     private Double inclination;
@@ -43,10 +43,10 @@ public class AnalysisResult extends BaseEntity {
                 .build();
     }
 
-    public AnalysisResult updateWith(final String name) {
+    public AnalysisResult updateWith(final String title) {
         return AnalysisResult.builder()
                 .id(this.id)
-                .name(name)
+                .title(title)
                 .member(this.member)
                 .similarity(this.similarity)
                 .inclination(this.inclination)

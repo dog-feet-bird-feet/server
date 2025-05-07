@@ -1,5 +1,6 @@
 package com.capstone.dfbf.api.result.service;
 
+import com.capstone.dfbf.api.member.repository.MemberRepository;
 import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.domain.History;
@@ -21,9 +22,14 @@ import static com.capstone.dfbf.global.exception.error.ErrorCode.RESULT_NOT_FOUN
 public class HistoryService {
 
     private final ResultRepository resultRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional(readOnly = true)
     public List<HistoryResultResponse> getHistoryByMemberId(final Long memberId) {
+        if(!isMemberExist(memberId)) {
+            throw BaseException.from(ErrorCode.MEMBER_NOT_FOUND);
+        }
+
         List<AnalysisResult> results = resultRepository.findByMember(memberId);
         History history = new History(results);
         return HistoryResultResponse.from(history);
@@ -58,5 +64,9 @@ public class HistoryService {
 
     private boolean isResultExist(final String resultId) {
         return resultRepository.existsById(resultId);
+    }
+
+    private boolean isMemberExist(final Long memberId) {
+        return memberRepository.existsById(memberId);
     }
 }
