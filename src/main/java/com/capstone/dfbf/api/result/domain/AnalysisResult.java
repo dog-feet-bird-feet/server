@@ -22,7 +22,7 @@ public class AnalysisResult extends BaseEntity {
     @GenericGenerator(name = "ulid-generator", strategy = "com.capstone.dfbf.api.result.domain.UlidGenerator")
     private String id;
 
-    @ColumnDefault("제목없음")
+    @ColumnDefault("'제목없음'")
     private String title;
     private Double similarity;
     private Double pressure;
