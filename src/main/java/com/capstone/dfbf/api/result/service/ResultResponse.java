@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 public record ResultResponse(
         String id,
-        String name,
+        String title,
         Double similarity,
         Double pressure,
         Double inclination,
@@ -21,7 +21,7 @@ public record ResultResponse(
     public static ResultResponse from(AnalysisResult result) {
         return ResultResponse.builder()
                 .id(result.getId())
-                .name(result.getTitle())
+                .title(result.getTitle())
                 .similarity(result.getSimilarity())
                 .pressure(result.getPressure())
                 .inclination(result.getInclination())
