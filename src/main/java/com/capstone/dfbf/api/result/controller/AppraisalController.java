@@ -1,6 +1,7 @@
 package com.capstone.dfbf.api.result.controller;
 
 import com.capstone.dfbf.api.result.dto.AppraisalRequest;
+import com.capstone.dfbf.api.result.dto.AppraisalResponse;
 import com.capstone.dfbf.api.result.dto.AppraisalSuccess;
 import com.capstone.dfbf.api.result.service.AppraisalService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,8 +22,8 @@ public class AppraisalController {
 
     @Operation(summary = "감정하기", description = "감정결과ID와 이미지URL을 AI 서버에 전송하여 감정결과를 받습니다.")
     @PostMapping
-    public ResponseEntity<String> appraisal(@RequestBody AppraisalRequest request) {
-        AppraisalSuccess success = appraisalService.appraise(request);
-        return ResponseEntity.ok(success.message());
+    public ResponseEntity<AppraisalResponse> appraisal(@RequestBody AppraisalRequest request) {
+        AppraisalResponse response = appraisalService.appraise(request);
+        return ResponseEntity.ok(response);
     }
 }
