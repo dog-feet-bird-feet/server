@@ -28,7 +28,7 @@ public class AppraisalService {
     private final RestTemplate restTemplate;
 
     @Transactional
-    public AppraisalSuccess appraise(final AppraisalRequest request) {
+    public AppraisalResponse appraise(final AppraisalRequest request) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<AppraisalRequest> requestEntity = new HttpEntity<>(request, headers);
@@ -42,7 +42,7 @@ public class AppraisalService {
         saveAppraisal(appraisalResponse);
         log.info(Objects.requireNonNull(appraisalResponse).toString());
 
-        return AppraisalSuccess.from("감정이 완료되었습니다.");
+        return appraisalResponse;
     }
 
     @Transactional(readOnly = true)
