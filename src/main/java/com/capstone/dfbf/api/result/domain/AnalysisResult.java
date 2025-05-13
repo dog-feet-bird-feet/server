@@ -2,7 +2,7 @@ package com.capstone.dfbf.api.result.domain;
 
 import com.capstone.dfbf.api.evidence.domain.EvidenceGroup;
 import com.capstone.dfbf.api.member.Member;
-import com.capstone.dfbf.api.result.dto.AppraisalResponse;
+import com.capstone.dfbf.api.result.dto.AppraisalAIResponse;
 import com.capstone.dfbf.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,14 +35,14 @@ public class AnalysisResult extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private EvidenceGroup evidenceGroup;
 
-    public AnalysisResult updateWith(final AppraisalResponse response) {
+    public AnalysisResult updateWith(final AppraisalAIResponse response) {
         return AnalysisResult.builder()
                 .id(this.id)
                 .member(this.member)
                 .similarity(response.similarity())
                 .inclination(response.inclination())
                 .pressure(response.pressure())
-                .verificationImgUrl(response.verificationImgUrl())
+                .verificationImgUrl(response.verificationImageUrl())
                 .build();
     }
 

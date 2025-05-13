@@ -1,11 +1,11 @@
 package com.capstone.dfbf.api.result.service;
 
+import com.capstone.dfbf.api.member.Member;
+import com.capstone.dfbf.api.member.repository.MemberRepository;
 import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.dto.AppraisalRequest;
-import com.capstone.dfbf.api.result.dto.AppraisalResponse;
-import com.capstone.dfbf.api.result.dto.AppraisalSuccess;
-import com.capstone.dfbf.global.exception.BaseException;
+import com.capstone.dfbf.api.result.dto.AppraisalAIResponse;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -39,79 +39,52 @@ class AppraisalServiceTest {
     private RestTemplate restTemplate;
     @Mock
     private ResultRepository resultRepository;
+    @Mock
+    private MemberRepository memberRepository;
 
     @Test
     void AI_서버에_분석을_의뢰한다() {
         // given
         AppraisalRequest request = createAppraisalRequest();
-        AppraisalResponse expectedResponse = createAppraisalResponse();
+        AppraisalAIResponse expectedResponse = createAppraisalResponse();
         AnalysisResult mockResult = createAnalysisResult();
+        Member member = Member.builder().id(1L).email("hong123@naver.com").build();
 
-        ResponseEntity<AppraisalResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
+        ResponseEntity<AppraisalAIResponse> responseEntity = new ResponseEntity<>(expectedResponse, HttpStatus.OK);
         when(restTemplate.exchange(
                 anyString(),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
-                eq(AppraisalResponse.class))
+                eq(AppraisalAIResponse.class))
         ).thenReturn(responseEntity);
         when(resultRepository.findById(anyString())).thenReturn(Optional.ofNullable(mockResult));
         when(resultRepository.save(any(AnalysisResult.class))).thenReturn(mockResult);
+        when(memberRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(member));
 
         // when
-        AppraisalSuccess success = appraisalService.appraise(request);
+        AppraisalAIResponse response = appraisalService.appraise(1L, request);
 
         // then
-        assertThat(success.isSuccess()).isEqualTo(true);
-        assertThat(success.message()).isEqualTo("감정이 완료되었습니다.");
+        assertThat(response.inclination()).isNotNull();
     }
 
     @Test
     void AI_서버에_요청_Body_형식이_올바르지_않을_경우_예외가_발생한다() {
         // given
         AppraisalRequest request = createAppraisalRequest();
+        Member member = Member.builder().id(1L).email("hong123@naver.com").build();
 
         when(restTemplate.exchange(
                 anyString(),
                 eq(HttpMethod.POST),
                 any(HttpEntity.class),
-                eq(AppraisalResponse.class))
+                eq(AppraisalAIResponse.class))
         ).thenThrow(new HttpClientErrorException(HttpStatus.BAD_REQUEST));
 
         // when
         // then
-        assertThatThrownBy(() -> appraisalService.appraise(request))
+        assertThatThrownBy(() -> appraisalService.appraise(1L, request))
                 .isInstanceOf(HttpClientErrorException.class)
                 .hasMessageContaining("400 BAD_REQUEST");
-    }
-
-    @Test
-    void 감정_ID로_감정_결과를_조회한다() {
-        // given
-        final String id = "01JRSYFFCD6R6C88JJFA0JTZPB";
-        AnalysisResult result = createAnalysisResult();
-
-        when(resultRepository.findById(eq(id)))
-                .thenReturn(Optional.ofNullable(result));
-
-        // when
-        AppraisalResponse response = appraisalService.getAppraisal(id);
-
-        // then
-        assertThat(response.id()).isEqualTo(id);
-    }
-
-    @Test
-    void 잘못된_감정_ID로_감정_결과_확인시_에러가_발생한다() {
-        // given
-        final String id = "1";
-
-        when(resultRepository.findById(eq(id)))
-                .thenReturn(Optional.empty());
-
-        // when
-        // then
-        assertThatThrownBy(() -> appraisalService.getAppraisal(id))
-                .isInstanceOf(BaseException.class)
-                .hasMessage("결과를 찾을 수 없습니다.");
     }
 }

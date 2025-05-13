@@ -1,13 +1,12 @@
 package com.capstone.dfbf.api.result.domain;
 
-import com.capstone.dfbf.api.result.dto.AppraisalResponse;
+import com.capstone.dfbf.api.result.dto.AppraisalAIResponse;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import static com.capstone.dfbf.api.fixture.ResultFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -17,7 +16,7 @@ class AnalysisResultTest {
     void 유사도_필압_기울기_검증물사진주소들을_모두_업데이트한다() {
         // given
         AnalysisResult rawResult = createNullAnalysisResult();
-        AppraisalResponse response = createAppraisalResponse();
+        AppraisalAIResponse response = createAppraisalResponse();
 
         // when
         AnalysisResult updatedResult = rawResult.updateWith(response);
@@ -26,7 +25,7 @@ class AnalysisResultTest {
         assertThat(updatedResult.getInclination()).isEqualTo(response.inclination());
         assertThat(updatedResult.getPressure()).isEqualTo(response.pressure());
         assertThat(updatedResult.getSimilarity()).isEqualTo(response.similarity());
-        assertThat(updatedResult.getVerificationImgUrl()).isEqualTo(response.verificationImgUrl());
+        assertThat(updatedResult.getVerificationImgUrl()).isEqualTo(response.verificationImageUrl());
     }
 
     @Test
