@@ -10,8 +10,9 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum EvidenceError implements BaseCode {
 
-    INVALID_FILE_SIZE(HttpStatus.BAD_REQUEST, "E000", "파일 크기는 2MB 이하여야 합니다.", ErrorDisplayType.POPUP),
+    INVALID_FILE_SIZE(HttpStatus.BAD_REQUEST, "E000", "파일 크기는 10MB 이하여야 합니다.", ErrorDisplayType.POPUP),
     INVALID_FILE_TYPE(HttpStatus.BAD_REQUEST, "E001", "지원하지 않는 이미지 형식입니다. (jpg, png만 허용)", ErrorDisplayType.POPUP),
+    INVALID_FILE_COUNT(HttpStatus.BAD_REQUEST, "E002", "대조물은 5장을 업로드 해야 합니다.", ErrorDisplayType.POPUP),;
     ;
     private final HttpStatus status;
     private final String code;

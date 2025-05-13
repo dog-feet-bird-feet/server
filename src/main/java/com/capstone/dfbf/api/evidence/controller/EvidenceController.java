@@ -17,18 +17,12 @@ public class EvidenceController {
     private final EvidenceService evidenceService;
 
     @PostMapping("/upload/verification")
-    public void uploadVerification(@RequestPart("verification-file") MultipartFile multipartFile) throws IOException {
-        evidenceService.verificationUpload(multipartFile);
+    public String uploadVerification(@RequestPart("verification-file") MultipartFile file) throws IOException {
+        return evidenceService.verificationUpload(file);
     }
 
-    @PostMapping("/upload/comparison")
-    public void uploadComparisonFiles(@RequestPart("comparison-file") List<MultipartFile> files) throws IOException {
-        evidenceService.comparisonUpload(files);
-    }
-
-    @GetMapping("/presigned-url")
-    public ResponseEntity<String> getPresignedUrl(@RequestParam("key") String key) {
-        String url = evidenceService.getPresignedUrl(key);
-        return ResponseEntity.ok(url);
+    @PostMapping("/upload/comparisons")
+    public List<String> uploadComparisonFiles(@RequestPart("comparison-file") List<MultipartFile> files) throws IOException {
+        return evidenceService.comparisonUpload(files);
     }
 }
