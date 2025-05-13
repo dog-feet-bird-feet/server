@@ -21,14 +21,15 @@ public class EvidenceController {
 
     @Operation(summary = "검증물 업로드", description = "검증물을 S3 스토리지에 업로드합니다.")
     @PostMapping("/upload/verification")
-    public void uploadVerification(@RequestPart("verification-file") MultipartFile multipartFile) throws IOException {
-        evidenceService.verificationUpload(multipartFile);
+    public String uploadVerification(@RequestPart("verification-file") MultipartFile file) throws IOException {
+        return evidenceService.verificationUpload(file);
     }
-
+  
+ 
     @Operation(summary = "대조물 업로드", description = "대조물을 S3 스토리지에 업로드합니다.")
-    @PostMapping("/upload/comparison")
-    public void uploadComparisonFiles(@RequestPart("comparison-file") List<MultipartFile> files) throws IOException {
-        evidenceService.comparisonUpload(files);
+    @PostMapping("/upload/comparisons")
+    public List<String> uploadComparisonFiles(@RequestPart("comparison-file") List<MultipartFile> files) throws IOException {
+        return evidenceService.comparisonUpload(files);
     }
 
     @Operation(summary = "URL 프리사인", description = "S3 스토리지에 저장할 URL을 프리사인합니다.")

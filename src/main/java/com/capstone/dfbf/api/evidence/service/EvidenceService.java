@@ -6,6 +6,7 @@ import com.capstone.dfbf.api.evidence.error.EvidenceError;
 import com.capstone.dfbf.api.evidence.error.EvidenceException;
 import com.capstone.dfbf.api.evidence.repository.ComparisonRepository;
 import com.capstone.dfbf.api.evidence.repository.VerificationRepository;
+import com.capstone.dfbf.global.exception.error.ErrorCode;
 import com.capstone.dfbf.global.properties.S3Properties;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.GetObjectPresignRequest;
@@ -23,6 +25,7 @@ import software.amazon.awssdk.services.s3.presigner.model.PresignedGetObjectRequ
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -41,24 +44,30 @@ public class EvidenceService {
     private String bucket;
 
     @Transactional
-    public void verificationUpload(MultipartFile file) throws IOException {
+    public String verificationUpload(MultipartFile file) throws IOException {
         validateFile(file);
         String newKey = S3Properties.VERIFICATION_PREFIX + renameFilename(file.getOriginalFilename());
         uploadToS3Bucket(file, newKey);
         Verification verification = Verification.from(newKey);
         verificationRepository.save(verification);
+        return getObjectUrl(newKey);
     }
 
     @Transactional
-    public void comparisonUpload(List<MultipartFile> files) throws IOException {
-        // 파일 개수도 확인해야 할까??
+    public List<String> comparisonUpload(List<MultipartFile> files) throws IOException {
+        List<String> urls = new ArrayList<>();
+        if(files.size() != 5){
+            throw EvidenceException.from(EvidenceError.INVALID_FILE_COUNT);
+        }
         for (MultipartFile file : files) {
             validateFile(file);
             String newKey = S3Properties.COMPARISON_PREFIX + renameFilename(file.getOriginalFilename());
             uploadToS3Bucket(file, newKey);
             Comparison comparison = Comparison.from(newKey);
             comparisonRepository.save(comparison);
+            urls.add(getObjectUrl(newKey));
         }
+        return urls;
     }
 
     @Transactional(readOnly = true)
@@ -70,7 +79,7 @@ public class EvidenceService {
     }
 
     private void validateFile(MultipartFile file) {
-        if (file.getSize() > 2 * 1024 * 1024) {
+        if (file.getSize() > 10 * 1024 * 1024) {
             throw EvidenceException.from(EvidenceError.INVALID_FILE_SIZE);
         }
         String contentType = file.getContentType();
@@ -92,6 +101,13 @@ public class EvidenceService {
                 .contentType(fileType)
                 .contentDisposition("inline")
                 .build();
+    }
+
+    private String getObjectUrl(String newKey) {
+        return s3Client.utilities().getUrl(GetUrlRequest.builder()
+                .bucket(bucket)
+                .key(newKey)
+                .build()).toString();
     }
 
     private GetObjectPresignRequest buildGetObjectPresignRequest(GetObjectRequest getObjectRequest) {
