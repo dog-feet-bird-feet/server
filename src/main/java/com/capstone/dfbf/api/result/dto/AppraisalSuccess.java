@@ -5,10 +5,10 @@ import lombok.Builder;
 @Builder
 public record AppraisalSuccess(
         boolean isSuccess,
-        String message
+        Object message
 ) {
 
-    public static AppraisalSuccess from(final String message) {
+    public static AppraisalSuccess from(final Object message) {
         return AppraisalSuccess.builder()
                 .isSuccess(true)
                 .message(message)

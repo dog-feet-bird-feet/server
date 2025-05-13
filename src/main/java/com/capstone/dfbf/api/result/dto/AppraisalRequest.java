@@ -1,7 +1,10 @@
 package com.capstone.dfbf.api.result.dto;
 
+import java.util.List;
+
 public record AppraisalRequest(
-        String id
+        String verificationImageUrl,
+        List<String> comparisonImageUrls
 ) {
 
 }
