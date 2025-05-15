@@ -1,6 +1,7 @@
 package com.capstone.dfbf.global.security.filter;
 
 import com.capstone.dfbf.global.exception.BaseException;
+import com.capstone.dfbf.global.properties.JwtProperties;
 import com.capstone.dfbf.global.security.domain.PrincipalDetails;
 import com.capstone.dfbf.global.security.service.MemberDetailsService;
 import com.capstone.dfbf.global.token.provider.JwtProvider;
@@ -22,6 +23,8 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 import static com.capstone.dfbf.global.exception.error.ErrorCode.EMPTY_TOKEN_PROVIDED;
+import static com.capstone.dfbf.global.properties.JwtProperties.ACCESS_TOKEN_HEADER_NAME;
+import static com.capstone.dfbf.global.properties.JwtProperties.ACCESS_TOKEN_TYPE;
 
 
 @RequiredArgsConstructor
@@ -38,8 +41,8 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
-        String jwtHeader = request.getHeader("Authorization");
-        if (jwtHeader == null || !jwtHeader.startsWith("Bearer ")) {
+        String jwtHeader = request.getHeader(ACCESS_TOKEN_HEADER_NAME);
+        if (jwtHeader == null || !jwtHeader.startsWith(ACCESS_TOKEN_TYPE)) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -59,11 +62,11 @@ public class JwtFilter extends OncePerRequestFilter {
     }
 
     private String resolveToken(HttpServletRequest httpServletRequest) {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        String authorization = httpServletRequest.getHeader(ACCESS_TOKEN_HEADER_NAME);
         if (authorization == null) {
             throw BaseException.from(EMPTY_TOKEN_PROVIDED);
         }
-        if (authorization.startsWith("Bearer ")) {
+        if (authorization.startsWith(ACCESS_TOKEN_TYPE)) {
             return authorization.substring(7);
         }
         throw BaseException.from(EMPTY_TOKEN_PROVIDED);
