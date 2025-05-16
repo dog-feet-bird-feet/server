@@ -29,4 +29,13 @@ public enum ErrorCode implements BaseCode{
     private final String code;
     private final String message;
     private final ErrorDisplayType displayType;
+
+    public String toExampleJson() {
+        return String.format(
+                "{ \"status\": %d, \"code\": \"%s\", \"message\": \"%s\" }",
+                this.status.value(),
+                this.code,
+                this.message
+        );
+    }
 }
