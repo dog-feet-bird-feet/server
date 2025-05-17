@@ -1,5 +1,7 @@
 package com.capstone.dfbf.api.evidence.controller;
 
+import com.capstone.dfbf.api.evidence.dto.ComparisonRes;
+import com.capstone.dfbf.api.evidence.dto.VerificationRes;
 import com.capstone.dfbf.api.evidence.service.EvidenceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,14 +23,14 @@ public class EvidenceController {
 
     @Operation(summary = "검증물 업로드", description = "검증물을 S3 스토리지에 업로드합니다.")
     @PostMapping("/upload/verification")
-    public String uploadVerification(@RequestPart("verification-file") MultipartFile file) throws IOException {
+    public VerificationRes uploadVerification(@RequestPart("verification-file") MultipartFile file) throws IOException {
         return evidenceService.verificationUpload(file);
     }
   
  
     @Operation(summary = "대조물 업로드", description = "대조물을 S3 스토리지에 업로드합니다.")
     @PostMapping("/upload/comparisons")
-    public List<String> uploadComparisonFiles(@RequestPart("comparison-file") List<MultipartFile> files) throws IOException {
+    public ComparisonRes uploadComparisonFiles(@RequestPart("comparison-file") List<MultipartFile> files) throws IOException {
         return evidenceService.comparisonUpload(files);
     }
 

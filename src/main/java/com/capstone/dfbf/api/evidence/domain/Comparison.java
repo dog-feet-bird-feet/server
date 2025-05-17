@@ -18,17 +18,17 @@ public class Comparison extends BaseEntity implements Evidence {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String imgUrl;
+    private String objectKey;
 
     public Comparison(String key) {
-        this.imgUrl = key;
+        this.objectKey = key;
     }
 
     @Override
-    public Evidence updateImgUrl(String imgUrl) {
+    public Evidence updateImgUrl(String key) {
         return Comparison.builder()
                 .id(this.id)
-                .imgUrl(imgUrl)
+                .objectKey(key)
                 .build();
     }
 
