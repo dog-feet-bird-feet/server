@@ -2,6 +2,8 @@ package com.capstone.dfbf.api.evidence.service;
 
 import com.capstone.dfbf.api.evidence.domain.Comparison;
 import com.capstone.dfbf.api.evidence.domain.Verification;
+import com.capstone.dfbf.api.evidence.dto.ComparisonRes;
+import com.capstone.dfbf.api.evidence.dto.VerificationRes;
 import com.capstone.dfbf.api.evidence.error.EvidenceError;
 import com.capstone.dfbf.api.evidence.error.EvidenceException;
 import com.capstone.dfbf.api.evidence.repository.ComparisonRepository;
@@ -44,17 +46,17 @@ public class EvidenceService {
     private String bucket;
 
     @Transactional
-    public String verificationUpload(MultipartFile file) throws IOException {
+    public VerificationRes verificationUpload(MultipartFile file) throws IOException {
         validateFile(file);
         String newKey = S3Properties.VERIFICATION_PREFIX + renameFilename(file.getOriginalFilename());
         uploadToS3Bucket(file, newKey);
         Verification verification = Verification.from(newKey);
         verificationRepository.save(verification);
-        return getObjectUrl(newKey);
+        return VerificationRes.from(getObjectUrl(newKey));
     }
 
     @Transactional
-    public List<String> comparisonUpload(List<MultipartFile> files) throws IOException {
+    public ComparisonRes comparisonUpload(List<MultipartFile> files) throws IOException {
         List<String> urls = new ArrayList<>();
         if(files.size() != 5){
             throw EvidenceException.from(EvidenceError.INVALID_FILE_COUNT);
@@ -67,7 +69,7 @@ public class EvidenceService {
             comparisonRepository.save(comparison);
             urls.add(getObjectUrl(newKey));
         }
-        return urls;
+        return ComparisonRes.from(urls);
     }
 
     @Transactional(readOnly = true)
