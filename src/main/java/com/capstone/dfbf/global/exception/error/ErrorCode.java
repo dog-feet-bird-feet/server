@@ -16,7 +16,7 @@ public enum ErrorCode implements BaseCode{
     BINDING_ERROR(HttpStatus.BAD_REQUEST, "BINDING-0000", "바인딩 에러", ErrorDisplayType.POPUP),
 
     EMAIL_ALREADY_EXISTS(HttpStatus.FORBIDDEN, "MEMBER-0002", "이메일이 존재합니다.", ErrorDisplayType.POPUP),
-    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "TOKEN-0001", "토큰ㅇ", ErrorDisplayType.POPUP),
+    INVALID_TOKEN(HttpStatus.BAD_REQUEST, "TOKEN-0001", "유효하지 않는 토큰입니다.", ErrorDisplayType.POPUP),
     EXPIRED_ACCESS_TOKEN(HttpStatus.UNAUTHORIZED, "TOKEN-0000", "토큰 오류", ErrorDisplayType.POPUP),
     INVALID_EMAIL_OR_PASSWORD(HttpStatus.NOT_FOUND, "MEMBER-0001", "유효하지 않는 이메일, 비번", ErrorDisplayType.POPUP),
     EMPTY_TOKEN_PROVIDED(HttpStatus.UNAUTHORIZED, "TOKEN-0002", "토큰 텅텅", ErrorDisplayType.POPUP),

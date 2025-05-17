@@ -27,15 +27,13 @@ import static com.capstone.dfbf.global.properties.JwtProperties.ACCESS_TOKEN_HEA
 import static com.capstone.dfbf.global.properties.JwtProperties.ACCESS_TOKEN_TYPE;
 
 
-@RequiredArgsConstructor
 @Slf4j
-@Component
+@RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final MemberDetailsService memberDetailsService;
-    @Resource
-    private SecurityContextRepository securityContextRepository;
+    private final SecurityContextRepository securityContextRepository;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
