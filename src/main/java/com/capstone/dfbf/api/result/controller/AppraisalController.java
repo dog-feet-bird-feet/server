@@ -1,7 +1,7 @@
 package com.capstone.dfbf.api.result.controller;
 
 import com.capstone.dfbf.api.result.dto.AppraisalRequest;
-import com.capstone.dfbf.api.result.dto.AppraisalAIResponse;
+import com.capstone.dfbf.api.result.dto.AppraisalResponse;
 import com.capstone.dfbf.api.result.service.AppraisalService;
 import com.capstone.dfbf.global.security.domain.PrincipalDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -23,8 +23,8 @@ public class AppraisalController {
 
     @Operation(summary = "감정하기", description = "감정결과ID와 이미지URL을 AI 서버에 전송하여 감정결과를 받습니다.")
     @PostMapping("/appraisal")
-    public ResponseEntity<AppraisalAIResponse> appraisal(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody AppraisalRequest request) {
-        AppraisalAIResponse response = appraisalService.appraise(principalDetails.getAuthenticatedMember().getMemberId(), request);
+    public ResponseEntity<AppraisalResponse> appraisal(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody AppraisalRequest request) {
+        AppraisalResponse response = appraisalService.appraise(principalDetails.getAuthenticatedMember().getMemberId(), request);
         return ResponseEntity.ok(response);
     }
 }

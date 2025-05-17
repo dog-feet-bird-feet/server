@@ -6,6 +6,7 @@ import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.dto.AppraisalRequest;
 import com.capstone.dfbf.api.result.dto.AppraisalAIResponse;
+import com.capstone.dfbf.api.result.dto.AppraisalResponse;
 import com.capstone.dfbf.global.exception.BaseException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class AppraisalService {
     private final RestTemplate restTemplate;
 
     @Transactional
-    public AppraisalAIResponse appraise(final long memberId, final AppraisalRequest request) {
+    public AppraisalResponse appraise(final long memberId, final AppraisalRequest request) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<AppraisalRequest> requestEntity = new HttpEntity<>(request, headers);
@@ -41,18 +42,18 @@ public class AppraisalService {
         AppraisalAIResponse appraisalResponse = response.getBody();
 
         assert appraisalResponse != null;
-        saveAppraisal(memberId, appraisalResponse);
+        AnalysisResult savedResult = saveAppraisal(memberId, appraisalResponse);
         log.info(Objects.requireNonNull(appraisalResponse).toString());
 
-        return appraisalResponse;
+        return AppraisalResponse.from(savedResult);
     }
 
-    private void saveAppraisal(final long memberId, final AppraisalAIResponse response) {
+    private AnalysisResult saveAppraisal(final long memberId, final AppraisalAIResponse response) {
         // TODO 커스텀 예외 처리
 
         Member member = memberRepository.findById(memberId).orElseThrow(() -> BaseException.from(MEMBER_NOT_FOUND));
         AnalysisResult result = response.toEntity();
         result.update(member);
-        resultRepository.save(result);
+        return resultRepository.save(result);
     }
 }

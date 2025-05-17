@@ -6,28 +6,21 @@ import lombok.Builder;
 import java.time.LocalDate;
 
 @Builder
-public record AppraisalAIResponse(
+public record AppraisalResponse(
         Double similarity,
         Double pressure,
         Double inclination,
-        String verificationImageUrl
+        String verificationImageUrl,
+        LocalDate createdAt
 ) {
 
-    public static AppraisalAIResponse from(AnalysisResult analysisResult) {
-        return AppraisalAIResponse.builder()
+    public static AppraisalResponse from(AnalysisResult analysisResult) {
+        return AppraisalResponse.builder()
                 .inclination(analysisResult.getInclination())
                 .pressure(analysisResult.getPressure())
                 .similarity(analysisResult.getSimilarity())
                 .verificationImageUrl(analysisResult.getVerificationImgUrl())
-                .build();
-    }
-
-    public AnalysisResult toEntity() {
-        return AnalysisResult.builder()
-                .inclination(this.inclination)
-                .similarity(this.similarity)
-                .pressure(this.pressure)
-                .verificationImgUrl(this.verificationImageUrl)
+                .createdAt(analysisResult.getCreatedAt() != null ? analysisResult.getCreatedAt().toLocalDate() : null)
                 .build();
     }
 }
