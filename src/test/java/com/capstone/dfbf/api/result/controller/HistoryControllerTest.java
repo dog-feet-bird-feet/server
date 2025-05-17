@@ -129,7 +129,7 @@ class HistoryControllerTest extends MockitoBeanInjector {
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(result.getId()))
-                .andExpect(jsonPath("$.name").value(result.getTitle()));
+                .andExpect(jsonPath("$.title").value(result.getTitle()));
     }
 
     @Test

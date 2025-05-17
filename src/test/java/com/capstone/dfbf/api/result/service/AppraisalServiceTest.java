@@ -6,6 +6,7 @@ import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.dto.AppraisalRequest;
 import com.capstone.dfbf.api.result.dto.AppraisalAIResponse;
+import com.capstone.dfbf.api.result.dto.AppraisalResponse;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -57,12 +58,11 @@ class AppraisalServiceTest {
                 any(HttpEntity.class),
                 eq(AppraisalAIResponse.class))
         ).thenReturn(responseEntity);
-        when(resultRepository.findById(anyString())).thenReturn(Optional.ofNullable(mockResult));
         when(resultRepository.save(any(AnalysisResult.class))).thenReturn(mockResult);
         when(memberRepository.findById(any(Long.class))).thenReturn(Optional.ofNullable(member));
 
         // when
-        AppraisalAIResponse response = appraisalService.appraise(1L, request);
+        AppraisalResponse response = appraisalService.appraise(1L, request);
 
         // then
         assertThat(response.inclination()).isNotNull();

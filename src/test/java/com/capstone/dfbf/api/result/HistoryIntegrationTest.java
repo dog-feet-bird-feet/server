@@ -97,10 +97,10 @@ public class HistoryIntegrationTest {
                         .statusCode(HttpStatus.OK.value())
                         .body("", hasSize(2))
                         .body("[0].createdAt", equalTo(result1.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"))))
-                        .body("[0].verificationImageUrl", containsString("verification-img/"))
+                        .body("[0].verificationImgUrl", containsString("https://"))
                         .body("[1].id", notNullValue())
                         .body("[1].createdAt", equalTo(result2.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"))))
-                        .body("[1].verificationImageUrl", containsString("verification-img/"))
+                        .body("[1].verificationImgUrl", containsString("https://"))
                 .extract();
     }
 
@@ -123,7 +123,7 @@ public class HistoryIntegrationTest {
                         .body("pressure", equalTo(32.1F))
                         .body("inclination", equalTo(1.223F))
                         .body("createdAt", equalTo(result1.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"))))
-                        .body("verificationImageUrl", equalTo(result1.getVerificationImgUrl()))
+                        .body("verificationImgUrl", equalTo(result1.getVerificationImgUrl()))
                 .extract();
     }
 
