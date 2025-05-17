@@ -14,7 +14,7 @@ public class BaseException extends RuntimeException {
         this.code = code;
     }
 
-    private BaseException(BaseCode code, final String message) {
+    protected BaseException(BaseCode code, final String message) {
         super(message);
         this.code = code;
         this.customErrorMessage = message;

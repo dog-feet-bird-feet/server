@@ -58,7 +58,7 @@ public class EvidenceService {
     @Transactional
     public ComparisonRes comparisonUpload(List<MultipartFile> files) throws IOException {
         List<String> urls = new ArrayList<>();
-        if(files.size() != 5){
+        if(files.size() > 5 || files.isEmpty()){
             throw EvidenceException.from(EvidenceError.INVALID_FILE_COUNT);
         }
         for (MultipartFile file : files) {
