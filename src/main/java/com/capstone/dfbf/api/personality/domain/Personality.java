@@ -18,4 +18,6 @@ public class Personality extends BaseEntity {
     private Traits traits;
 
     private String type;
+
+    private String description;
 }
