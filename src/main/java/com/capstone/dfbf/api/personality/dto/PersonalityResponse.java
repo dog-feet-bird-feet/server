@@ -8,7 +8,8 @@ import lombok.Builder;
 public record PersonalityResponse(
         Long id,
         Traits traits,
-        String type
+        String type,
+        String description
 ) {
 
     public static PersonalityResponse from(Personality personality) {
@@ -16,6 +17,7 @@ public record PersonalityResponse(
                 .id(personality.getId())
                 .traits(personality.getTraits())
                 .type(personality.getType())
+                .description(personality.getDescription())
                 .build();
     }
 }

@@ -1,5 +1,7 @@
 package com.capstone.dfbf.api.fixture;
 
+import com.capstone.dfbf.api.personality.dto.PersonalityRequest;
+import com.capstone.dfbf.api.personality.dto.PersonalityResponse;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.dto.AppraisalRequest;
 import com.capstone.dfbf.api.result.dto.AppraisalAIResponse;
@@ -55,6 +57,12 @@ public class ResultFixture {
     public static AnalysisResult createNullAnalysisResult() {
         return AnalysisResult.builder()
                 .id(id)
+                .build();
+    }
+
+    public static PersonalityRequest createPersonalityRequest() {
+        return PersonalityRequest.builder()
+                .imageUrl("https://ggzz-img.s3.ap-northeast-2.amazonaws.com/personality/test.png")
                 .build();
     }
 }
