@@ -3,6 +3,7 @@ package com.capstone.dfbf.api.personality.service;
 import com.capstone.dfbf.api.member.Member;
 import com.capstone.dfbf.api.personality.domain.Personality;
 import com.capstone.dfbf.api.personality.dto.PersonalityAIResponse;
+import com.capstone.dfbf.api.personality.dto.PersonalityRequest;
 import com.capstone.dfbf.api.personality.dto.PersonalityResponse;
 import com.capstone.dfbf.api.personality.error.PersonalityError;
 import com.capstone.dfbf.api.personality.error.PersonalityException;
@@ -35,7 +36,7 @@ import static com.capstone.dfbf.global.s3.S3FileNameUtil.renameFilename;
 @RequiredArgsConstructor
 public class PersonalityService {
 
-    private final static String fastApiEndpoint = "http://localhost:8000/api/v1/evaluate";
+    private final static String fastApiEndpoint = "http://localhost:8000/api/v1/personality/analyze";
 
     private final S3Service s3Service;
     private final RestTemplate restTemplate;
@@ -48,10 +49,10 @@ public class PersonalityService {
         return s3Service.upload(file, newKey);
     }
 
-    public PersonalityResponse evaluate(String imageUrl) {
+    public PersonalityResponse evaluate(PersonalityRequest request) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> requestEntity = new HttpEntity<>(imageUrl, headers);
+        HttpEntity<PersonalityRequest> requestEntity = new HttpEntity<>(request, headers);
 
         ResponseEntity<PersonalityAIResponse> response =
                 restTemplate.exchange(fastApiEndpoint, HttpMethod.POST, requestEntity, PersonalityAIResponse.class);

@@ -1,5 +1,6 @@
 package com.capstone.dfbf.api.personality.controller;
 
+import com.capstone.dfbf.api.personality.dto.PersonalityRequest;
 import com.capstone.dfbf.api.personality.dto.PersonalityResponse;
 import com.capstone.dfbf.api.personality.service.PersonalityService;
 import lombok.RequiredArgsConstructor;
@@ -16,9 +17,9 @@ public class PersonalityController {
 
     private final PersonalityService personalityService;
 
-    @PostMapping("/evaluate")
-    public ResponseEntity<?> evaluate(@RequestBody String imageUrl) {
-        PersonalityResponse response = personalityService.evaluate(imageUrl);
+    @PostMapping("/analyze")
+    public ResponseEntity<?> analyze(@RequestBody PersonalityRequest request) {
+        PersonalityResponse response = personalityService.evaluate(request);
         return ResponseEntity.ok().body(response);
     }
 }
