@@ -36,7 +36,7 @@ import static com.capstone.dfbf.global.s3.S3FileNameUtil.renameFilename;
 @RequiredArgsConstructor
 public class PersonalityService {
 
-    private final static String fastApiEndpoint = "http://localhost:8000/api/v1/personality/analyze";
+    private final static String fastApiEndpoint = "http://13.124.91.167:8000/api/v1/personality/analyze";
 
     private final S3Service s3Service;
     private final RestTemplate restTemplate;
