@@ -5,10 +5,10 @@ import com.capstone.dfbf.api.personality.dto.PersonalityResponse;
 import com.capstone.dfbf.api.personality.service.PersonalityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
@@ -16,6 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class PersonalityController {
 
     private final PersonalityService personalityService;
+
+    @PostMapping("/upload")
+    public ResponseEntity<String> uploadPersonality(@RequestPart("personality-file") MultipartFile file) throws IOException {
+        return ResponseEntity.ok().body(personalityService.uploadImage(file));
+    }
 
     @PostMapping("/analyze")
     public ResponseEntity<?> analyze(@RequestBody PersonalityRequest request) {
