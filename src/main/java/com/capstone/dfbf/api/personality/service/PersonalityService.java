@@ -3,6 +3,7 @@ package com.capstone.dfbf.api.personality.service;
 import com.capstone.dfbf.api.member.Member;
 import com.capstone.dfbf.api.personality.domain.Personality;
 import com.capstone.dfbf.api.personality.dto.PersonalityAIResponse;
+import com.capstone.dfbf.api.personality.dto.PersonalityImageRes;
 import com.capstone.dfbf.api.personality.dto.PersonalityRequest;
 import com.capstone.dfbf.api.personality.dto.PersonalityResponse;
 import com.capstone.dfbf.api.personality.error.PersonalityError;
@@ -43,10 +44,10 @@ public class PersonalityService {
     private final PersonalityRepository personalityRepository;
 
     @Transactional
-    public String uploadImage(MultipartFile file) throws IOException {
+    public PersonalityImageRes uploadImage(MultipartFile file) throws IOException {
         validateFile(file);
         String newKey = PERSONALITY_PREFIX + renameFilename(file.getOriginalFilename());
-        return s3Service.upload(file, newKey);
+        return PersonalityImageRes.from(s3Service.upload(file, newKey));
     }
 
     public PersonalityResponse evaluate(PersonalityRequest request) {

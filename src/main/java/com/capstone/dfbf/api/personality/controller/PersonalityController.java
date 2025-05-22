@@ -1,5 +1,6 @@
 package com.capstone.dfbf.api.personality.controller;
 
+import com.capstone.dfbf.api.personality.dto.PersonalityImageRes;
 import com.capstone.dfbf.api.personality.dto.PersonalityRequest;
 import com.capstone.dfbf.api.personality.dto.PersonalityResponse;
 import com.capstone.dfbf.api.personality.service.PersonalityService;
@@ -18,8 +19,8 @@ public class PersonalityController {
     private final PersonalityService personalityService;
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadPersonality(@RequestPart("personality-file") MultipartFile file) throws IOException {
-        return ResponseEntity.ok().body(personalityService.uploadImage(file));
+    public PersonalityImageRes uploadPersonality(@RequestPart("personality-file") MultipartFile file) throws IOException {
+        return personalityService.uploadImage(file);
     }
 
     @PostMapping("/analyze")
