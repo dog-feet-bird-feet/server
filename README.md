@@ -1,1 +1,5 @@
 # server
+
+```bash
+showlog
+```
