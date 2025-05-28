@@ -6,7 +6,6 @@ import com.capstone.dfbf.api.result.dto.AppraisalAIResponse;
 import com.capstone.dfbf.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 
 @Entity
@@ -22,8 +21,9 @@ public class AnalysisResult extends BaseEntity {
     @GenericGenerator(name = "ulid-generator", strategy = "com.capstone.dfbf.api.result.domain.UlidGenerator")
     private String id;
 
-    @ColumnDefault("'제목없음'")
-    private String title;
+    @Column(nullable = false)
+    @Builder.Default
+    private String title = "제목없음";
     private Double similarity;
     private Double pressure;
     private Double inclination;

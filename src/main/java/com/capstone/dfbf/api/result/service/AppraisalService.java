@@ -54,6 +54,6 @@ public class AppraisalService {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> BaseException.from(MEMBER_NOT_FOUND));
         AnalysisResult result = response.toEntity();
         result.update(member);
-        return resultRepository.save(result);
+        return resultRepository.saveAndFlush(result);
     }
 }
