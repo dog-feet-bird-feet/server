@@ -1,20 +1,27 @@
 package com.capstone.dfbf.global.token.provider;
 
+import com.capstone.dfbf.api.member.Member;
 import com.capstone.dfbf.global.exception.BaseException;
+import com.capstone.dfbf.global.exception.response.ErrorResponse;
 import com.capstone.dfbf.global.security.domain.AuthenticatedMember;
+import com.capstone.dfbf.global.security.service.MemberDetailsService;
 import com.capstone.dfbf.global.token.vo.AccessTokenVO;
 import com.capstone.dfbf.global.token.vo.TokenResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
@@ -50,6 +57,14 @@ public class JwtProvider{
             return AccessTokenVO.of("");
         }
         return this.generateAccessToken(authenticatedMember.getEmail());
+    }
+
+    public AccessTokenVO generateAccessToken(Member member) {
+        if (member.getEmail() == null ||
+                member.getEmail().isBlank()) {
+            return AccessTokenVO.of("");
+        }
+        return this.generateAccessToken(member.getEmail());
     }
 
     private AccessTokenVO generateAccessToken(String email) {

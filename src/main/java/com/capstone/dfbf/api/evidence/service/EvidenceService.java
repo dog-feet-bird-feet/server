@@ -8,8 +8,12 @@ import com.capstone.dfbf.api.evidence.error.EvidenceError;
 import com.capstone.dfbf.api.evidence.error.EvidenceException;
 import com.capstone.dfbf.api.evidence.repository.ComparisonRepository;
 import com.capstone.dfbf.api.evidence.repository.VerificationRepository;
+import com.capstone.dfbf.api.member.error.MemberError;
+import com.capstone.dfbf.api.member.error.MemberException;
+import com.capstone.dfbf.api.member.repository.MemberRepository;
 import com.capstone.dfbf.global.exception.error.ErrorCode;
 import com.capstone.dfbf.global.properties.S3Properties;
+import com.capstone.dfbf.global.security.domain.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,12 +45,14 @@ public class EvidenceService {
     private final S3Presigner s3Presigner;
     private final VerificationRepository verificationRepository;
     private final ComparisonRepository comparisonRepository;
+    private final MemberRepository memberRepository;
 
     @Value("${spring.cloud.aws.s3.bucket}")
     private String bucket;
 
     @Transactional
-    public VerificationRes verificationUpload(MultipartFile file) throws IOException {
+    public VerificationRes verificationUpload(PrincipalDetails principalDetails, MultipartFile file) throws IOException {
+        loadMemberOrThrow(principalDetails.getAuthenticatedMember().getEmail());
         validateFile(file);
         String newKey = S3Properties.VERIFICATION_PREFIX + renameFilename(file.getOriginalFilename());
         uploadToS3Bucket(file, newKey);
@@ -56,11 +62,11 @@ public class EvidenceService {
     }
 
     @Transactional
-    public ComparisonRes comparisonUpload(List<MultipartFile> files) throws IOException {
+    public ComparisonRes comparisonUpload(PrincipalDetails principalDetails,
+                                          List<MultipartFile> files) throws IOException {
+        loadMemberOrThrow(principalDetails.getAuthenticatedMember().getEmail());
+        validateFiles(files);
         List<String> urls = new ArrayList<>();
-        if(files.size() > 5 || files.isEmpty()){
-            throw EvidenceException.from(EvidenceError.INVALID_FILE_COUNT);
-        }
         for (MultipartFile file : files) {
             validateFile(file);
             String newKey = S3Properties.COMPARISON_PREFIX + renameFilename(file.getOriginalFilename());
@@ -85,9 +91,15 @@ public class EvidenceService {
             throw EvidenceException.from(EvidenceError.INVALID_FILE_SIZE);
         }
         String contentType = file.getContentType();
-        log.info("File content type is {}", contentType);
+        log.info("File content type : {}", contentType);
         if (!Objects.equals(contentType, "image/jpeg") && !Objects.equals(contentType, "image/png")) {
             throw EvidenceException.from(EvidenceError.INVALID_FILE_TYPE);
+        }
+    }
+
+    private void validateFiles(List<MultipartFile> files) {
+        if(files.size() > 5 || files.isEmpty()){
+            throw EvidenceException.from(EvidenceError.INVALID_FILE_COUNT);
         }
     }
 
@@ -128,5 +140,10 @@ public class EvidenceService {
 
     private String renameFilename(String fileName){
         return UUID.randomUUID() + "_" + fileName;
+    }
+
+    private void loadMemberOrThrow(String email) {
+        memberRepository.findMemberByEmail(email)
+                .orElseThrow(() -> MemberException.from(MemberError.NON_EXIST_MEMBER));
     }
 }

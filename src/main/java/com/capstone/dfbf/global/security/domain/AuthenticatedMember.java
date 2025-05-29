@@ -13,15 +13,11 @@ import java.util.Collections;
 public class AuthenticatedMember {
     private Long memberId;
     private String email;
-    private Member.Role role;
-    private Collection<? extends GrantedAuthority> authorities;
 
     public static AuthenticatedMember from(Member member){
         return new AuthenticatedMember(
                 member.getId(),
-                member.getEmail(),
-                member.getRole(),
-                Collections.singleton(new SimpleGrantedAuthority(member.getRole().name()))
+                member.getEmail()
         );
     }
 }
