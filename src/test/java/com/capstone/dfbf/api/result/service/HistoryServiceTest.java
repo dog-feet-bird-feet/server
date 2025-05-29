@@ -52,7 +52,7 @@ class HistoryServiceTest {
     void 회원ID로_히스토리_결과_조회를_성공한다() {
         // given
         final long memberId = member.getId();
-        when(resultRepository.findByMember(memberId)).thenReturn(List.of(result));
+        when(resultRepository.findByMemberCreatedAtDesc(memberId)).thenReturn(List.of(result));
         when(memberRepository.existsById(anyLong())).thenReturn(true);
 
         // when

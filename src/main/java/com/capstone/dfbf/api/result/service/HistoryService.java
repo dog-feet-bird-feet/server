@@ -30,7 +30,7 @@ public class HistoryService {
             throw BaseException.from(ErrorCode.MEMBER_NOT_FOUND);
         }
 
-        List<AnalysisResult> results = resultRepository.findByMember(memberId);
+        List<AnalysisResult> results = resultRepository.findByMemberCreatedAtDesc(memberId);
         History history = new History(results);
         return HistoryResultResponse.from(history);
     }

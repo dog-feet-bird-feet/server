@@ -13,4 +13,7 @@ public interface ResultRepository extends JpaRepository<AnalysisResult, String> 
 
     @Query("SELECT r FROM AnalysisResult r WHERE r.member.id = :memberId")
     List<AnalysisResult> findByMember(@Param("memberId") Long memberId);
+
+    @Query("SELECT r FROM AnalysisResult r WHERE r.member.id = :memberId ORDER BY r.createdAt DESC")
+    List<AnalysisResult> findByMemberCreatedAtDesc(@Param("memberId") Long memberId);
 }
