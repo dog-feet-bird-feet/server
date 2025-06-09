@@ -1,5 +1,8 @@
 # AI 기반 필적 분석 서비스, 끄적
 
+[**📚 노션 페이지**](https://positive-printer-b18.notion.site/1af56972e71080a098a4d54e332cf88e?source=copy_link)
+
+[**📱 플레이스토어**]()
 
 ## 🤗 컨트리뷰터
 
@@ -8,8 +11,6 @@
 | <img src="https://avatars.githubusercontent.com/u/84739562?v=4" height=150 width=150> | <img src="https://avatars.githubusercontent.com/u/163285230?v=4" height=150 width=150> | <img src="https://avatars.githubusercontent.com/u/63222221?v=4" height=150 width=150> |                           <img src="https://avatars.githubusercontent.com/u/123933574?v=4" height=150 width=150> |
 |  [남윤석](https://github.com/Namyunsuk)  |  [고찬영](https://github.com/cyko1218) | [윤성원](https://github.com/mete0rfish) | [이동훈](https://github.com/LEEDONGH00N)                     |
 
-노션 페이지
-플레이스토어
 
 <br/>
 
@@ -49,8 +50,42 @@ AI를 통한 필기체 관련 앱 서비스는 많이 존재하지 않습니다.
 
 <br/>
 
+## 📷 데모 시연
+| <img width="250" src="https://github.com/user-attachments/assets/3834b71c-3294-4edd-aa8c-63efb89129ab"/> | <img width="250" src="https://github.com/user-attachments/assets/a08a3518-72da-4771-b052-b0324db6f99a"/> | <img width="250" src="https://github.com/user-attachments/assets/230a2dc3-6d2d-4609-ac9f-841e801b5e34"/> |
+|:-------------------------:|:-------------------------:|:-------------------------:|
+|         `스플래시/로그인`         |        `스플래시/홈화면`         |            `이미지 업로드/제거`            |    
+
+<br>
+
+
+| <img width="250" src="https://github.com/user-attachments/assets/64e03839-ee5d-4bbd-b62f-2a7a6046fe6b"/> | <img width="250" src="https://github.com/user-attachments/assets/173fdeba-7c1e-4a83-a863-289b68d54bfd"/> | <img width="250" src="https://github.com/user-attachments/assets/8570e1f0-28bb-4d4c-a1ce-3e9c1970549b">  
+|:-------------------------:|:-------------------------:|:-------------------------:|
+| `이미지 예외 처리` | `필적 감정` | `성격 분석` |
+
+<br>
+
+
+| <img width="250" src="https://github.com/user-attachments/assets/79529a78-b199-41ba-a8da-11e7699c4ee1"/> | <img width="250" src="https://github.com/user-attachments/assets/665240f8-f4e4-4541-a705-0e5116daf4ec"/> | <img width="250" src="https://github.com/user-attachments/assets/62fa31e4-3429-4d77-906b-8d427f0c39d8">  
+|:-------------------------:|:-------------------------:|:-------------------------:|
+| `히스토리` | `제목 수정/삭제` | `히스토리 상세 조회` |
+
+<br/>
+
 ## 🛠️ 기술 스택
+|            Category            | Tech       |
+|:------------------------------:|------------|
+|            **WAS**             | Spring Boot <br/> FastAPI |
+|          **Database**          | MySQL      |
+|            **ORM**             | Spring Data JPA |
+|            **Test**            | JUnit <br/> Mockito |
+|           **CI/CD**            | Github Action |
+|           **Deploy**           | AWS EC2 |
+|          **Storage**           | AWS S3 |
+|          **Monitor**           | Prometheus <br/> Grafana |
+| **Performence** <br/> **Test** | K6 |
+
 ### 기술 선정 이유
+[**🛠️ 기술 선정**](https://acoustic-rest-b1b.notion.site/20964b4a4ab480abb4c7c2b6b1f2d75c?source=copy_link)
 
 <br/>
 
@@ -59,9 +94,5 @@ AI를 통한 필기체 관련 앱 서비스는 많이 존재하지 않습니다.
 <img src="https://github.com/user-attachments/assets/12799cc2-8900-4799-a60a-710a74a47c9d" height=500 width=700>
 
 ### 인프라 아키텍처
+![끄적아키텍처](https://github.com/user-attachments/assets/82f1dd35-2e04-4fb6-b4fe-73abcd6a89be)
 
-![캡스톤시스템구조도](https://github.com/user-attachments/assets/2672ca34-76ff-4c29-87f2-717ab29115dc)
-
-<br/>
-
-## 🔥 트러블 슈팅
