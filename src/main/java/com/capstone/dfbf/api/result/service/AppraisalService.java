@@ -14,6 +14,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Objects;
 
@@ -28,32 +31,25 @@ public class AppraisalService {
 
     private final MemberRepository memberRepository;
     private final ResultRepository resultRepository;
-    private final RestTemplate restTemplate;
 
-    @Transactional
-    public AppraisalResponse appraise(final long memberId, final AppraisalRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<AppraisalRequest> requestEntity = new HttpEntity<>(request, headers);
+    private final WebClient webClient;
 
-        ResponseEntity<AppraisalAIResponse> response =
-                restTemplate.exchange(fastApiEndpoint, HttpMethod.POST, requestEntity, AppraisalAIResponse.class);
-
-        AppraisalAIResponse appraisalResponse = response.getBody();
-
-        assert appraisalResponse != null;
-        AnalysisResult savedResult = saveAppraisal(memberId, appraisalResponse);
-        log.info(Objects.requireNonNull(appraisalResponse).toString());
-
-        return AppraisalResponse.from(savedResult);
+    public Mono<AppraisalResponse> appraise(final long memberId, final AppraisalRequest request) {
+        return webClient.post()
+                .uri(fastApiEndpoint)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .retrieve()
+                .bodyToMono(AppraisalAIResponse.class)
+                .map(response -> saveAppraisal(memberId, response))
+                .map(AppraisalResponse::from);
     }
 
-    private AnalysisResult saveAppraisal(final long memberId, final AppraisalAIResponse response) {
-        // TODO 커스텀 예외 처리
-
+    public AnalysisResult saveAppraisal(long memberId, AppraisalAIResponse response) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> BaseException.from(MEMBER_NOT_FOUND));
         AnalysisResult result = response.toEntity();
         result.update(member);
-        return resultRepository.saveAndFlush(result);
+        resultRepository.save(result);
+        return result;
     }
 }
