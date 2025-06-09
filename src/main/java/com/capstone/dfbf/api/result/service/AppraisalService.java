@@ -41,6 +41,7 @@ public class AppraisalService {
                 .bodyValue(request)
                 .retrieve()
                 .bodyToMono(AppraisalAIResponse.class)
+                .subscribeOn(Schedulers.boundedElastic())
                 .map(response -> saveAppraisal(memberId, response))
                 .map(AppraisalResponse::from);
     }
