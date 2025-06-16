@@ -2,6 +2,7 @@ package com.capstone.dfbf.api.member.service;
 
 import com.capstone.dfbf.api.member.Member;
 import com.capstone.dfbf.api.member.dto.LoginReqDto;
+import com.capstone.dfbf.api.member.dto.SignUpReqDto;
 import com.capstone.dfbf.api.member.error.MemberError;
 import com.capstone.dfbf.api.member.error.MemberException;
 import com.capstone.dfbf.api.member.repository.MemberRepository;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Slf4j
@@ -22,25 +24,41 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
 
-    public void login(LoginReqDto request, HttpServletResponse response){
-        Member member = loadMemberOrRegister(request);
+    @Transactional(readOnly = true)
+    public void login(LoginReqDto request, HttpServletResponse response) {
+        Member member = loadMemberOrThrow(request);
+        validatePassword(request, member);
         AccessTokenVO accessToken = jwtProvider.generateAccessToken(member);
         response.setHeader("Authorization", "Bearer " + accessToken.token());
     }
 
-    private Member loadMemberOrRegister(LoginReqDto request){
+    @Transactional
+    public void signup(SignUpReqDto request) {
+        validateMemberExistByEmail(request.getEmail());
+        String encodedPassword = passwordEncoder.encode(request.getPassword());
+        Member member = Member.create(request.getEmail(), encodedPassword);
+        memberRepository.save(member);
+    }
+
+    @Transactional(readOnly = true)
+    public void validateEmail(String email){
+        validateMemberExistByEmail(email);
+    }
+
+    private Member loadMemberOrThrow(LoginReqDto request) {
         return memberRepository.findMemberByEmail(request.getEmail())
-                .map(member -> {
-                    if (!passwordEncoder.matches(request.getPassword(), member.getEncodedPassword())) {
-                        throw new MemberException(MemberError.INVALID_PASSWORD);
-                    }
-                    return member;
-                })
-                .orElseGet(() -> {
-                    String encodedPassword = passwordEncoder.encode(request.getPassword());
-                    Member newMember = Member.createMember(request.getEmail(), encodedPassword);
-                    memberRepository.save(newMember);
-                    return newMember;
-                });
+                .orElseThrow(() -> new MemberException(MemberError.NON_EXIST_MEMBER));
+    }
+
+    private void validatePassword(LoginReqDto request, Member member) {
+        if (!passwordEncoder.matches(request.getPassword(), member.getEncodedPassword())) {
+            throw new MemberException(MemberError.INVALID_PASSWORD);
+        }
+    }
+
+    private void validateMemberExistByEmail(String email) {
+        if(memberRepository.existsByEmail(email)){
+            throw MemberException.from(MemberError.ALREADY_EXIST_EMAIL);
+        }
     }
 }

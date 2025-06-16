@@ -28,7 +28,7 @@ public class Member extends BaseEntity {
 //        private String type;
 //    }
 
-    public static Member createMember(String email, String encodedPassword){
+    public static Member create(String email, String encodedPassword){
         return Member.builder()
                 .email(email)
                 .encodedPassword(encodedPassword)

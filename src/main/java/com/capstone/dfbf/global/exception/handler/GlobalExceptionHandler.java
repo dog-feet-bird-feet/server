@@ -2,7 +2,6 @@ package com.capstone.dfbf.global.exception.handler;
 
 import com.capstone.dfbf.global.exception.BaseException;
 import com.capstone.dfbf.global.exception.error.ErrorCode;
-import com.capstone.dfbf.global.exception.error.ErrorDisplayType;
 import com.capstone.dfbf.global.exception.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice(annotations = {RestController.class})
 public class GlobalExceptionHandler {
 
-
     @ExceptionHandler(BaseException.class)
     public ResponseEntity<ErrorResponse> onThrowException(BaseException baseException) {
         ErrorResponse response = ErrorResponse.generateErrorResponse(baseException);
@@ -27,7 +25,7 @@ public class GlobalExceptionHandler {
         ErrorResponse response = ErrorResponse.builder()
                 .code(ErrorCode.BINDING_ERROR.getCode())
                 .message(exception.getBindingResult().getFieldError().getDefaultMessage())
-                .displayType(ErrorDisplayType.POPUP)
+                .displayType(ErrorCode.BINDING_ERROR.getDisplayType())
                 .build();
         return ResponseEntity.status(exception.getStatusCode()).body(response);
     }

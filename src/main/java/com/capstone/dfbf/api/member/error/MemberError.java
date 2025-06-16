@@ -12,6 +12,7 @@ public enum MemberError implements BaseCode {
 
     INVALID_PASSWORD(HttpStatus.BAD_REQUEST, "M000", "비밀번호가 올바르지 않습니다.", ErrorDisplayType.POPUP),
     NON_EXIST_MEMBER(HttpStatus.BAD_REQUEST, "M001", "존재하지 않은 회원입니다.", ErrorDisplayType.POPUP),
+    ALREADY_EXIST_EMAIL(HttpStatus.BAD_REQUEST, "M002", "존재하는 이메일입니다.", ErrorDisplayType.POPUP),
     ;
     private final HttpStatus status;
     private final String code;
