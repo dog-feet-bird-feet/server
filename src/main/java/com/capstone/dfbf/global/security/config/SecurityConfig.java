@@ -43,7 +43,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests((authorize) -> authorize
                         .requestMatchers("/", "/index/**", "/index.js", "/favicon.ico", "/.well-known/**",
-                                "/templates", "/error", "/v3/api-docs/**", "/swagger-ui/**", "/api/v1/login", "/actuator/**").permitAll()
+                                "/templates", "/error", "/v3/api-docs/**", "/swagger-ui/**", "/api/v1/login",
+                                "/api/v1/signup",  "/api/v1/check-email","/actuator/**").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling((exceptionHandling) -> exceptionHandling
                         .authenticationEntryPoint(authenticationEntryPoint)
