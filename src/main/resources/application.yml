@@ -1,6 +1,6 @@
 spring:
   config:
-    import: "optional:application-local.yml"
+    import: "optional:application-dev.yml"
 
 management:
   endpoints:
