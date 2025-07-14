@@ -37,3 +37,4 @@ out/
 .vscode/
 application-*.yml
 !application.yml
+.DS_Store
