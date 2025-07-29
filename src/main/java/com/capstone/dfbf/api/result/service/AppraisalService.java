@@ -23,7 +23,7 @@ import static com.capstone.dfbf.global.exception.error.ErrorCode.MEMBER_NOT_FOUN
 @Service
 public class AppraisalService {
 
-    private final static String fastApiEndpoint = "http://43.200.169.69:8000/api/v1/analyze";
+    private final static String fastApiEndpoint = "http://43.200.169.69:8000/api/v1";
 
     private final MemberRepository memberRepository;
     private final ResultRepository resultRepository;
