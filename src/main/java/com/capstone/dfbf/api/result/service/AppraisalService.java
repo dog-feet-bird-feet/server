@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
 
@@ -24,28 +23,25 @@ import static com.capstone.dfbf.global.exception.error.ErrorCode.MEMBER_NOT_FOUN
 @Service
 public class AppraisalService {
 
-    private final static String fastApiEndpoint = "http://43.200.169.69:8000/api/v1/analyze";
+    private final static String fastApiEndpoint = "http://43.200.169.69:8000/api/v1";
 
     private final MemberRepository memberRepository;
     private final ResultRepository resultRepository;
 
-    private final RestTemplate restTemplate;
-
     public AppraisalResponse appraise(final long memberId, final AppraisalRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<AppraisalRequest> requestEntity = new HttpEntity<>(request, headers);
+        RestClient restClient = RestClient.builder()
+                .baseUrl(fastApiEndpoint)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .build();
 
-        ResponseEntity<AppraisalAIResponse> response =
-                restTemplate.exchange(fastApiEndpoint, HttpMethod.POST, requestEntity, AppraisalAIResponse.class);
+        AppraisalAIResponse response = restClient
+                .post()
+                .uri(uriBuilder -> uriBuilder.path("/analyze").build())
+                .body(request)
+                .retrieve()
+                .body(AppraisalAIResponse.class);
 
-        AppraisalAIResponse appraisalResponse = response.getBody();
-
-        assert appraisalResponse != null;
-        AnalysisResult savedResult = saveAppraisal(memberId, appraisalResponse);
-        log.info(Objects.requireNonNull(appraisalResponse).toString());
-
-        return AppraisalResponse.from(savedResult);
+        return AppraisalResponse.from(saveAppraisal(memberId, Objects.requireNonNull(response)));
     }
 
     public AnalysisResult saveAppraisal(long memberId, AppraisalAIResponse response) {
