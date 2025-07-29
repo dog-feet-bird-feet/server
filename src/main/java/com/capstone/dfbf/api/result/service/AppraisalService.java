@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
 
@@ -28,20 +29,23 @@ public class AppraisalService {
     private final MemberRepository memberRepository;
     private final ResultRepository resultRepository;
 
+    private final RestTemplate restTemplate;
+
     public AppraisalResponse appraise(final long memberId, final AppraisalRequest request) {
-        RestClient restClient = RestClient.builder()
-                .baseUrl(fastApiEndpoint)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<AppraisalRequest> requestEntity = new HttpEntity<>(request, headers);
 
-        AppraisalAIResponse response = restClient
-                .post()
-                .uri(uriBuilder -> uriBuilder.path("/analyze").build())
-                .body(request)
-                .retrieve()
-                .body(AppraisalAIResponse.class);
+        ResponseEntity<AppraisalAIResponse> response =
+                restTemplate.exchange(fastApiEndpoint, HttpMethod.POST, requestEntity, AppraisalAIResponse.class);
 
-        return AppraisalResponse.from(saveAppraisal(memberId, Objects.requireNonNull(response)));
+        AppraisalAIResponse appraisalResponse = response.getBody();
+
+        assert appraisalResponse != null;
+        AnalysisResult savedResult = saveAppraisal(memberId, appraisalResponse);
+        log.info(Objects.requireNonNull(appraisalResponse).toString());
+
+        return AppraisalResponse.from(savedResult);
     }
 
     public AnalysisResult saveAppraisal(long memberId, AppraisalAIResponse response) {
