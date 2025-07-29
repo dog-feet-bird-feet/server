@@ -13,6 +13,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.util.Objects;
 
@@ -23,25 +26,23 @@ import static com.capstone.dfbf.global.exception.error.ErrorCode.MEMBER_NOT_FOUN
 @Service
 public class AppraisalService {
 
-    private final static String fastApiEndpoint = "http://43.200.169.69:8000/api/v1";
+    private final static String fastApiEndpoint = "http://43.200.169.69:8000/api/v1/analyze";
 
     private final MemberRepository memberRepository;
     private final ResultRepository resultRepository;
 
-    public AppraisalResponse appraise(final long memberId, final AppraisalRequest request) {
-        RestClient restClient = RestClient.builder()
-                .baseUrl(fastApiEndpoint)
-                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-                .build();
+    private final WebClient webClient;
 
-        AppraisalAIResponse response = restClient
-                .post()
-                .uri(uriBuilder -> uriBuilder.path("/analyze").build())
-                .body(request)
+    public Mono<AppraisalResponse> appraise(final long memberId, final AppraisalRequest request) {
+        return webClient.post()
+                .uri(fastApiEndpoint)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
                 .retrieve()
-                .body(AppraisalAIResponse.class);
-
-        return AppraisalResponse.from(saveAppraisal(memberId, Objects.requireNonNull(response)));
+                .bodyToMono(AppraisalAIResponse.class)
+                .subscribeOn(Schedulers.boundedElastic())
+                .map(response -> saveAppraisal(memberId, response))
+                .map(AppraisalResponse::from);
     }
 
     public AnalysisResult saveAppraisal(long memberId, AppraisalAIResponse response) {

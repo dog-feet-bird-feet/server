@@ -24,8 +24,8 @@ public class AppraisalController {
 
     @Operation(summary = "감정하기", description = "감정결과ID와 이미지URL을 AI 서버에 전송하여 감정결과를 받습니다.")
     @PostMapping("/appraisal")
-    public ResponseEntity<AppraisalResponse> appraisal(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody AppraisalRequest request) {
-        AppraisalResponse response = appraisalService.appraise(principalDetails.getAuthenticatedMember().getMemberId(), request);
-        return ResponseEntity.ok(response);
+    public Mono<ResponseEntity<AppraisalResponse>> appraisal(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody AppraisalRequest request) {
+        return appraisalService.appraise(principalDetails.getAuthenticatedMember().getMemberId(), request)
+                .map(ResponseEntity::ok);
     }
 }
