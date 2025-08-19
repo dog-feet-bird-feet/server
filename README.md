@@ -94,5 +94,6 @@ AI를 통한 필기체 관련 앱 서비스는 많이 존재하지 않습니다.
 <img src="https://github.com/user-attachments/assets/12799cc2-8900-4799-a60a-710a74a47c9d" height=500 width=700>
 
 ### 인프라 아키텍처
-![끄적아키텍처](https://github.com/user-attachments/assets/82f1dd35-2e04-4fb6-b4fe-73abcd6a89be)
+
+<img width="1226" height="415" alt="캡스톤다이어그램" src="https://github.com/user-attachments/assets/8fce1e24-e9d9-440a-b5f0-31043712a58d" />
 
