@@ -1,8 +1,8 @@
 package com.capstone.dfbf.api.result.controller.docs;
 
 import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
+import com.capstone.dfbf.api.result.dto.ResultResponse;
 import com.capstone.dfbf.api.result.dto.ResultUpdateRequest;
-import com.capstone.dfbf.global.exception.error.ErrorCode;
 import com.capstone.dfbf.global.security.domain.PrincipalDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -51,7 +51,7 @@ public interface HistoryApi {
                     @ApiResponse(responseCode = "200", description = "성공",
                             content = @Content(
                                     mediaType = "application/json",
-                                    schema = @Schema(implementation = HistoryResultResponse.class)
+                                    schema = @Schema(implementation = ResultResponse.class)
                             )
                     )
             }

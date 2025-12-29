@@ -6,6 +6,7 @@ import com.capstone.dfbf.api.member.repository.MemberRepository;
 import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
+import com.capstone.dfbf.api.result.dto.ResultResponse;
 import com.capstone.dfbf.global.exception.BaseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -16,7 +17,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -45,7 +45,7 @@ class HistoryServiceTest {
     void setUp() {
         member = Member.builder().id(1L).email("hong123@gmail.com").nickname("hong").build();
         result = ResultFixture.createAnalysisResult();
-        result.update(member);
+        result.updateMember(member);
     }
 
     @Test
@@ -141,7 +141,6 @@ class HistoryServiceTest {
         final String resultId = result.getId();
         final String newName = "새롭게 변경된 결과";
         when(resultRepository.findById(eq(resultId))).thenReturn(Optional.of(result));
-        when(resultRepository.save(any(AnalysisResult.class))).thenReturn(result);
 
         // when
         String returnedId = historyService.updateResultName(resultId, newName);
