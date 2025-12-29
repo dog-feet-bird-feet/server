@@ -8,7 +8,6 @@ import com.capstone.dfbf.api.member.error.MemberException;
 import com.capstone.dfbf.api.member.repository.MemberRepository;
 import com.capstone.dfbf.global.token.provider.JwtProvider;
 import com.capstone.dfbf.global.token.vo.AccessTokenVO;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,11 +24,10 @@ public class MemberService {
     private final JwtProvider jwtProvider;
 
     @Transactional(readOnly = true)
-    public void login(LoginReqDto request, HttpServletResponse response) {
+    public AccessTokenVO login(LoginReqDto request) {
         Member member = loadMemberOrThrow(request);
         validatePassword(request, member);
-        AccessTokenVO accessToken = jwtProvider.generateAccessToken(member);
-        response.setHeader("Authorization", "Bearer " + accessToken.token());
+        return jwtProvider.generateAccessToken(member);
     }
 
     @Transactional
@@ -51,7 +49,7 @@ public class MemberService {
     }
 
     private void validatePassword(LoginReqDto request, Member member) {
-        if (!passwordEncoder.matches(request.getPassword(), member.getEncodedPassword())) {
+        if (!member.isPasswordMatch(passwordEncoder, request.getPassword())) {
             throw new MemberException(MemberError.INVALID_PASSWORD);
         }
     }

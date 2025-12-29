@@ -3,6 +3,7 @@ package com.capstone.dfbf.api.member;
 import com.capstone.dfbf.global.base.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Entity
 @Getter
@@ -33,5 +34,9 @@ public class Member extends BaseEntity {
                 .email(email)
                 .encodedPassword(encodedPassword)
                 .build();
+    }
+
+    public boolean isPasswordMatch(PasswordEncoder passwordEncoder, String rawPassword) {
+        return passwordEncoder.matches(rawPassword, this.encodedPassword);
     }
 }

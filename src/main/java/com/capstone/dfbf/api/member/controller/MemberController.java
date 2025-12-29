@@ -3,6 +3,7 @@ package com.capstone.dfbf.api.member.controller;
 import com.capstone.dfbf.api.member.dto.LoginReqDto;
 import com.capstone.dfbf.api.member.dto.SignUpReqDto;
 import com.capstone.dfbf.api.member.service.MemberService;
+import com.capstone.dfbf.global.token.vo.AccessTokenVO;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,8 @@ public class MemberController {
 
     @PostMapping("/login")
     public void login(@Valid @RequestBody LoginReqDto reqDto, HttpServletResponse response) {
-        memberService.login(reqDto, response);
+        AccessTokenVO accessToken = memberService.login(reqDto);
+        response.setHeader("Authorization", "Bearer " + accessToken.token());
     }
 
     @GetMapping("/check-email")
