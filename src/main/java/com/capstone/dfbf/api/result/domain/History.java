@@ -1,10 +1,8 @@
 package com.capstone.dfbf.api.result.domain;
 
-import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor

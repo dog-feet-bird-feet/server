@@ -2,17 +2,11 @@ package com.capstone.dfbf.api.result.controller;
 
 import com.capstone.dfbf.api.result.controller.docs.HistoryApi;
 import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
+import com.capstone.dfbf.api.result.dto.ResultResponse;
 import com.capstone.dfbf.api.result.dto.ResultUpdateRequest;
 import com.capstone.dfbf.api.result.service.HistoryService;
-import com.capstone.dfbf.api.result.service.ResultResponse;
 import com.capstone.dfbf.global.security.domain.PrincipalDetails;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
