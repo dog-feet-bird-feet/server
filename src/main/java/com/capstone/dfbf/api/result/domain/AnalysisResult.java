@@ -35,30 +35,18 @@ public class AnalysisResult extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     private EvidenceGroup evidenceGroup;
 
-    public AnalysisResult updateWith(final AppraisalAIResponse response) {
-        return AnalysisResult.builder()
-                .id(this.id)
-                .member(this.member)
-                .similarity(response.similarity())
-                .inclination(response.inclination())
-                .pressure(response.pressure())
-                .verificationImgUrl(response.verificationImageUrl())
-                .build();
+    public void updateWith(final AppraisalAIResponse response) {
+        this.similarity = response.similarity();
+        this.inclination = response.inclination();
+        this.pressure = response.pressure();
+        this.verificationImgUrl = response.verificationImageUrl();
     }
 
-    public AnalysisResult updateWith(final String title) {
-        return AnalysisResult.builder()
-                .id(this.id)
-                .title(title)
-                .member(this.member)
-                .similarity(this.similarity)
-                .inclination(this.inclination)
-                .pressure(this.pressure)
-                .verificationImgUrl(this.verificationImgUrl)
-                .build();
+    public void updateTitle(final String title) {
+        this.title = title;
     }
 
-    public void update(final Member member) {
+    public void updateMember(final Member member) {
         setMember(member);
     }
 }

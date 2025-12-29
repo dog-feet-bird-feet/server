@@ -25,11 +25,8 @@ public class Comparison extends BaseEntity implements Evidence {
     }
 
     @Override
-    public Evidence updateImgUrl(String key) {
-        return Comparison.builder()
-                .id(this.id)
-                .objectKey(key)
-                .build();
+    public void updateImgUrl(String key) {
+        this.objectKey = key;
     }
 
     public static Comparison from(String key){

@@ -5,6 +5,7 @@ import com.capstone.dfbf.api.result.dao.ResultRepository;
 import com.capstone.dfbf.api.result.domain.AnalysisResult;
 import com.capstone.dfbf.api.result.domain.History;
 import com.capstone.dfbf.api.result.dto.HistoryResultResponse;
+import com.capstone.dfbf.api.result.dto.ResultResponse;
 import com.capstone.dfbf.global.exception.BaseException;
 import com.capstone.dfbf.global.exception.error.ErrorCode;
 import lombok.RequiredArgsConstructor;
@@ -44,8 +45,7 @@ public class HistoryService {
     @Transactional
     public String updateResultName(final String resultId, final String newName) {
         AnalysisResult result = findById(resultId);
-        result = result.updateWith(newName);
-        resultRepository.save(result);
+        result.updateTitle(newName);
         return result.getId();
     }
 

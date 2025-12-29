@@ -47,7 +47,7 @@ public class AppraisalService {
     public AnalysisResult saveAppraisal(long memberId, AppraisalAIResponse response) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> BaseException.from(MEMBER_NOT_FOUND));
         AnalysisResult result = response.toEntity();
-        result.update(member);
+        result.updateMember(member);
         resultRepository.save(result);
         return result;
     }

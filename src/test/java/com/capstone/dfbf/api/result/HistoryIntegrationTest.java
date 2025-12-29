@@ -232,9 +232,9 @@ public class HistoryIntegrationTest {
 
     private void createAndSaveResult() {
         result1 = ResultFixture.createAnalysisResultWOId();
-        result1.update(member);
+        result1.updateMember(member);
         result2 = ResultFixture.createAnalysisResultWOId();
-        result2.update(member);
+        result2.updateMember(member);
 
         result1 = resultRepository.save(result1);
         result2 = resultRepository.save(result2);
