@@ -19,13 +19,13 @@ class AnalysisResultTest {
         AppraisalAIResponse response = createAppraisalResponse();
 
         // when
-        AnalysisResult updatedResult = rawResult.updateWith(response);
+        rawResult.updateWith(response);
 
         // then
-        assertThat(updatedResult.getInclination()).isEqualTo(response.inclination());
-        assertThat(updatedResult.getPressure()).isEqualTo(response.pressure());
-        assertThat(updatedResult.getSimilarity()).isEqualTo(response.similarity());
-        assertThat(updatedResult.getVerificationImgUrl()).isEqualTo(response.verificationImageUrl());
+        assertThat(rawResult.getInclination()).isEqualTo(response.inclination());
+        assertThat(rawResult.getPressure()).isEqualTo(response.pressure());
+        assertThat(rawResult.getSimilarity()).isEqualTo(response.similarity());
+        assertThat(rawResult.getVerificationImgUrl()).isEqualTo(response.verificationImageUrl());
     }
 
     @Test
